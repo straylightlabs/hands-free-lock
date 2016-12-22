@@ -13,17 +13,33 @@ import CoreBluetooth
 
 class PeripheralsViewController: UIViewController {
 
+    struct MyScannedPeripheral {
+        var peripheral: Peripheral
+        var rssi: Decimal
+        var lastDiscoveryTime: Date
+
+        init(_ peripheral: ScannedPeripheral) {
+            self.peripheral = peripheral.peripheral
+            self.rssi = peripheral.rssi.decimalValue
+            self.lastDiscoveryTime = Date()
+        }
+    }
+
     @IBOutlet weak var tableView: UITableView!
 
     // TODO(ryok): Support state restoration.
     private let bluetoothManager = BluetoothManager(queue: .main)
     private let disposeBag = DisposeBag()
-    private var lastUnlockTime: TimeInterval = 0
-    fileprivate var scannedPeripherals: [ScannedPeripheral] = []
+    private var lastUnlockTime = Date()
+    fileprivate var scannedPeripherals: [MyScannedPeripheral] = []
     fileprivate var registeredUUIDs = Set<String>([
         "AD315288-C4D2-FDCC-CE86-4C5A687B5FB9"  // Ryo's Tile
     ])
     fileprivate let cellId = "PeripheralTableCell"
+    private let timeUntilLock = 30.0
+    private let minRSSIToAuthorize: Decimal = -95.0
+    private let scanDuration = 15.0
+    private var scanTime = Date()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,6 +51,9 @@ class PeripheralsViewController: UIViewController {
 
         let timerQueue = DispatchQueue(label: "jp.straylight.StraylightLockApp")
         let scheduler = ConcurrentDispatchQueueScheduler(queue: timerQueue)
+
+        self.scanTime = Date()
+        self.lastUnlockTime = Date()
 
         self.bluetoothManager.rx_state
             .timeout(5.0, scheduler: scheduler)
@@ -49,9 +68,9 @@ class PeripheralsViewController: UIViewController {
             })
             .addDisposableTo(self.disposeBag)
 
-        Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
+        Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true) { [weak self] _ in
             if let strongSelf = self {
-                strongSelf.authorize()
+                strongSelf.updateAutorization()
             }
         }
     }
@@ -61,11 +80,15 @@ class PeripheralsViewController: UIViewController {
     }
 
     private func processPeripheral(_ peripheral: ScannedPeripheral) {
+        let scannedPeripheral = MyScannedPeripheral(peripheral)
+        self.authorize(scannedPeripheral)
+
         let mapped = scannedPeripherals.map { $0.peripheral }
         if let index = mapped.index(of: peripheral.peripheral) {
-            self.scannedPeripherals[index] = peripheral
-        } else {
-            self.scannedPeripherals.append(peripheral)
+            self.scannedPeripherals[index] = scannedPeripheral
+        // TODO(ryok): Add a UI control for scanning.
+        } else if Date().timeIntervalSince(self.scanTime) < self.scanDuration {
+            self.scannedPeripherals.append(scannedPeripheral)
             self.connectPeripheral(peripheral.peripheral)
         }
         self.tableView.reloadData()
@@ -82,33 +105,20 @@ class PeripheralsViewController: UIViewController {
             .addDisposableTo(self.disposeBag)
     }
 
-    fileprivate func authorize() {
-        if (self.registeredUUIDs.isEmpty) {
-            // Should not change the lock state if no device registered.
-            return
-        }
-
-        var shouldUnlock = false
-        for peripheral in self.scannedPeripherals {
-            let uuid = peripheral.peripheral.identifier.uuidString
-            if self.registeredUUIDs.contains(uuid) {
-                print("DEBUG: RSSI=\(peripheral.rssi.stringValue) [\(uuid)].")
-                if -80 < peripheral.rssi.decimalValue && peripheral.rssi.decimalValue < 0 {
-                    shouldUnlock = true
-                    break
-                }
+    private func authorize(_ peripheral: MyScannedPeripheral) {
+        let uuid = peripheral.peripheral.identifier.uuidString
+        if self.registeredUUIDs.contains(uuid) {
+            print("DEBUG: Discovery RSSI=\(peripheral.rssi) UUID=\(uuid).")
+            if self.minRSSIToAuthorize < peripheral.rssi && peripheral.rssi < 0 {
+                self.lastUnlockTime = Date()
+                self.updateAutorization()
             }
         }
+    }
 
-        let now = Date().timeIntervalSince1970
-        if shouldUnlock {
-            self.lastUnlockTime = now
-        } else if now < self.lastUnlockTime + 30 {
-            // Lock after 30 seconds of dissappearance.
-            shouldUnlock = true
-        }
-
+    private func updateAutorization() {
         if let lockVC = LockViewController.singleton {
+            let shouldUnlock = Date().timeIntervalSince(self.lastUnlockTime) < self.timeUntilLock
             lockVC.updateLockState(!shouldUnlock)
         }
     }
@@ -136,7 +146,8 @@ extension PeripheralsViewController: UITableViewDataSource, UITableViewDelegate 
 
 extension PeripheralsViewController: PeripheralTableViewCellDelegate {
 
-    func didSwitchRegister(uuid: String, on: Bool) {
+    func didSwitchRegister(peripheral: Peripheral, on: Bool) {
+        let uuid = peripheral.identifier.uuidString
         if on {
             print("INFO: Registered [\(uuid)].")
             self.registeredUUIDs.insert(uuid)
@@ -144,7 +155,6 @@ extension PeripheralsViewController: PeripheralTableViewCellDelegate {
             print("INFO: Unregistered [\(uuid)].")
             self.registeredUUIDs.remove(uuid)
         }
-        self.authorize()
     }
 
 }

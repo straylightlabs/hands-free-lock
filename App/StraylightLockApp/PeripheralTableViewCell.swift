@@ -10,11 +10,12 @@ import UIKit
 import RxBluetoothKit
 
 protocol PeripheralTableViewCellDelegate {
-    func didSwitchRegister(uuid: String, on: Bool) -> Void
+    func didSwitchRegister(peripheral: Peripheral, on: Bool) -> Void
 }
 
 class PeripheralTableViewCell: UITableViewCell {
 
+    var peripheral: Peripheral?
     var delegate: PeripheralTableViewCellDelegate?
 
     @IBOutlet weak var registerSwitch: UISwitch!
@@ -22,9 +23,10 @@ class PeripheralTableViewCell: UITableViewCell {
     @IBOutlet weak var rssiLabel: UILabel!
     @IBOutlet weak var uuidLabel: UILabel!
 
-    func updateWith(_ peripheral: ScannedPeripheral, registered: Bool) {
+    func updateWith(_ peripheral: PeripheralsViewController.MyScannedPeripheral, registered: Bool) {
+        self.peripheral = peripheral.peripheral
         self.nameLabel.text = peripheral.peripheral.name ?? "Unknown device"
-        self.rssiLabel.text = peripheral.rssi.decimalValue == 127 ? "" : peripheral.rssi.stringValue
+        self.rssiLabel.text = peripheral.rssi == 127 || Date().timeIntervalSince(peripheral.lastDiscoveryTime) > 10.0 ? "" : String(describing: peripheral.rssi)
         self.uuidLabel.text = peripheral.peripheral.identifier.uuidString
         self.registerSwitch.isOn = registered
         self.registerSwitch.addTarget(self, action: #selector(didSwitchRegister), for: .valueChanged)
@@ -32,7 +34,7 @@ class PeripheralTableViewCell: UITableViewCell {
 
     func didSwitchRegister(sender: UISwitch) {
         if let delegate = self.delegate {
-            delegate.didSwitchRegister(uuid: self.uuidLabel.text!, on: sender.isOn)
+            delegate.didSwitchRegister(peripheral: self.peripheral!, on: sender.isOn)
         }
     }
 
