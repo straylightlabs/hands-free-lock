@@ -18,7 +18,7 @@ class PeripheralsViewController: UIViewController {
     // TODO(ryok): Support state restoration.
     private let bluetoothManager = BluetoothManager(queue: .main)
     private let disposeBag = DisposeBag()
-    private var lastUnlockTime = Date().timeIntervalSince1970
+    private var lastUnlockTime: TimeInterval = 0
     fileprivate var scannedPeripherals: [ScannedPeripheral] = []
     fileprivate var registeredUUIDs = Set<String>()
     fileprivate let cellId = "PeripheralTableCell"
