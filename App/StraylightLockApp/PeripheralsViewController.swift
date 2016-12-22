@@ -83,6 +83,11 @@ class PeripheralsViewController: UIViewController {
     }
 
     fileprivate func authorize() {
+        if (self.registeredUUIDs.isEmpty) {
+            // Should not change the lock state if no device registered.
+            return
+        }
+
         var shouldUnlock = false
         for peripheral in self.scannedPeripherals {
             let uuid = peripheral.peripheral.identifier.uuidString
