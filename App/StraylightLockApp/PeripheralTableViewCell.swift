@@ -24,7 +24,7 @@ class PeripheralTableViewCell: UITableViewCell {
 
     func updateWith(_ peripheral: ScannedPeripheral, registered: Bool) {
         self.nameLabel.text = peripheral.peripheral.name ?? "Unknown device"
-        self.rssiLabel.text = peripheral.rssi.stringValue
+        self.rssiLabel.text = peripheral.rssi.decimalValue == 127 ? "" : peripheral.rssi.stringValue
         self.uuidLabel.text = peripheral.peripheral.identifier.uuidString
         self.registerSwitch.isOn = registered
         self.registerSwitch.addTarget(self, action: #selector(didSwitchRegister), for: .valueChanged)

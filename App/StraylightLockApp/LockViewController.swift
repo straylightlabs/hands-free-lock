@@ -73,12 +73,13 @@ class LockViewController: UIViewController, HMHomeManagerDelegate, HMAccessoryDe
     }
 
     func updateLockState(_ shouldLock: Bool) {
-        print("INFO: Updating the lock state: \(shouldLock ? "LOCKED" : "UNLOCKED").")
-
         if self.isUpdatingLockState || self.isLocked == shouldLock {
             return
         }
+
         self.isUpdatingLockState = true
+        print("INFO: Updating the lock state: \(shouldLock ? "LOCKED" : "UNLOCKED").")
+
         if let state = self.targetLockState {
             state.writeValue(shouldLock ? 1 : 0) { error in
                 if error != nil {

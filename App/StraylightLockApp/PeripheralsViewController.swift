@@ -20,7 +20,9 @@ class PeripheralsViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private var lastUnlockTime: TimeInterval = 0
     fileprivate var scannedPeripherals: [ScannedPeripheral] = []
-    fileprivate var registeredUUIDs = Set<String>()
+    fileprivate var registeredUUIDs = Set<String>([
+        "AD315288-C4D2-FDCC-CE86-4C5A687B5FB9"  // Ryo's Tile
+    ])
     fileprivate let cellId = "PeripheralTableCell"
 
     override func viewDidLoad() {
@@ -72,7 +74,7 @@ class PeripheralsViewController: UIViewController {
     private func connectPeripheral(_ peripheral: Peripheral) {
         self.bluetoothManager.connect(peripheral)
             .subscribe(onNext: { _ in
-                print("INFO: Found \(peripheral.name)[\(peripheral.identifier.uuidString)].")
+                print("INFO: Found \(peripheral.name ?? "an unknown device") [\(peripheral.identifier.uuidString)].")
                 self.tableView.reloadData()
             }, onError: { error in
                 print("ERROR: Failed to connect to device[\(peripheral.identifier.uuidString)]. error=\(error)")
@@ -84,9 +86,12 @@ class PeripheralsViewController: UIViewController {
         var shouldUnlock = false
         for peripheral in self.scannedPeripherals {
             let uuid = peripheral.peripheral.identifier.uuidString
-            if self.registeredUUIDs.contains(uuid) && -80 < peripheral.rssi.decimalValue && peripheral.rssi.decimalValue < 0 {
-                shouldUnlock = true
-                break
+            if self.registeredUUIDs.contains(uuid) {
+                print("DEBUG: RSSI=\(peripheral.rssi.stringValue) [\(uuid)].")
+                if -80 < peripheral.rssi.decimalValue && peripheral.rssi.decimalValue < 0 {
+                    shouldUnlock = true
+                    break
+                }
             }
         }
 
