@@ -72,10 +72,10 @@ class PeripheralsViewController: UIViewController {
     private func connectPeripheral(_ peripheral: Peripheral) {
         self.bluetoothManager.connect(peripheral)
             .subscribe(onNext: { _ in
+                print("INFO: Found \(peripheral.name)[\(peripheral.identifier.uuidString)].")
                 self.tableView.reloadData()
             }, onError: { error in
-                let uuid = peripheral.identifier.uuidString
-                print("ERROR: Failed to connect to device[\(uuid)]. error=\(error)")
+                print("ERROR: Failed to connect to device[\(peripheral.identifier.uuidString)]. error=\(error)")
             })
             .addDisposableTo(self.disposeBag)
     }
