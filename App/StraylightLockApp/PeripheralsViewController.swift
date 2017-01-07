@@ -33,10 +33,14 @@ class PeripheralsViewController: UIViewController {
     private var lastUnlockTime = Date()
     fileprivate var scannedPeripherals: [MyScannedPeripheral] = []
     fileprivate var registeredUUIDs = Set<String>([
-        "AD315288-C4D2-FDCC-CE86-4C5A687B5FB9"  // Ryo's Tile
+        "F19285DC-6E02-450A-A234-FBC1629B9F2D",  // Ryo's Tile
+        "E53AF222-8BCF-4960-B68E-947DDD5670B5",  // Taj's Tile
+        "D3686310-B294-4105-BEBD-4A19D97E6779",  // X's Tile
+        "53A876C4-E359-4676-B50B-ACB9A93E67DF",  // X's Tile
+        "FCC9FFEF-1B94-4B6C-9D21-130A1CED28CE",  // Ryo's iPhone
     ])
     fileprivate let cellId = "PeripheralTableCell"
-    private let timeUntilLock = 30.0
+    private let timeUntilLock = 60.0
     private let minRSSIToAuthorize: Decimal = -95.0
     private let scanDuration = 15.0
     private var scanTime = Date()
@@ -75,20 +79,24 @@ class PeripheralsViewController: UIViewController {
         }
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        self.scanTime = Date()
+    }
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
 
-    private func processPeripheral(_ peripheral: ScannedPeripheral) {
-        let scannedPeripheral = MyScannedPeripheral(peripheral)
-        self.authorize(scannedPeripheral)
+    private func processPeripheral(_ scannedPeripheral: ScannedPeripheral) {
+        let peripheral = MyScannedPeripheral(scannedPeripheral)
+        self.authorize(peripheral)
 
         let mapped = scannedPeripherals.map { $0.peripheral }
         if let index = mapped.index(of: peripheral.peripheral) {
-            self.scannedPeripherals[index] = scannedPeripheral
+            self.scannedPeripherals[index] = peripheral
         // TODO(ryok): Add a UI control for scanning.
         } else if Date().timeIntervalSince(self.scanTime) < self.scanDuration {
-            self.scannedPeripherals.append(scannedPeripheral)
+            self.scannedPeripherals.append(peripheral)
             self.connectPeripheral(peripheral.peripheral)
         }
         self.tableView.reloadData()
@@ -96,8 +104,8 @@ class PeripheralsViewController: UIViewController {
 
     private func connectPeripheral(_ peripheral: Peripheral) {
         self.bluetoothManager.connect(peripheral)
-            .subscribe(onNext: { _ in
-                print("INFO: Found \(peripheral.name ?? "an unknown device") [\(peripheral.identifier.uuidString)].")
+            .subscribe(onNext: {
+                print("INFO: Found \($0.name ?? "an unknown device") [\($0.identifier.uuidString)].")
                 self.tableView.reloadData()
             }, onError: { error in
                 print("ERROR: Failed to connect to device[\(peripheral.identifier.uuidString)]. error=\(error)")
@@ -118,6 +126,9 @@ class PeripheralsViewController: UIViewController {
 
     private func updateAutorization() {
         if let lockVC = LockViewController.singleton {
+            if !lockVC.isAutoLockEnabled {
+                return
+            }
             let shouldUnlock = Date().timeIntervalSince(self.lastUnlockTime) < self.timeUntilLock
             lockVC.updateLockState(!shouldUnlock)
         }

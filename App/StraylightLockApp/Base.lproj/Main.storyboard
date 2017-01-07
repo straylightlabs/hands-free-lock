@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -22,35 +22,48 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1sO-ab-yeu">
-                                <rect key="frame" x="112.5" y="312.5" width="150" height="41"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="150" id="sI6-Sf-Mgy"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                <state key="normal" title="Locked">
-                                    <color key="titleColor" red="0.92935490608215332" green="0.40547775375271505" blue="0.22310449286234083" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                </state>
-                                <state key="disabled" title="Please wait..."/>
-                                <state key="selected" title="Unlocked">
-                                    <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                </state>
-                            </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="bzj-cB-czw">
+                                <rect key="frame" x="84" y="267.5" width="207" height="132"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1sO-ab-yeu">
+                                        <rect key="frame" x="0.0" y="0.0" width="207" height="41"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                        <state key="normal" title="Locked">
+                                            <color key="titleColor" red="0.92935490608215332" green="0.40547775375271505" blue="0.22310449286234083" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        </state>
+                                        <state key="disabled" title="Please wait..."/>
+                                        <state key="selected" title="Unlocked">
+                                            <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="63Y-Qi-ECO">
+                                        <rect key="frame" x="0.0" y="91" width="207" height="41"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                        <state key="normal" title="Auto Lock Disabled">
+                                            <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="selected" title="Auto Lock Enabled">
+                                            <color key="titleColor" red="0.2039215714" green="0.36862745879999997" blue="0.94901961089999998" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
+                                    </button>
+                                </subviews>
+                            </stackView>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="0gc-Sl-nhD">
                                 <rect key="frame" x="177" y="323" width="20" height="20"/>
                             </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="1sO-ab-yeu" firstAttribute="centerY" secondItem="tsR-hK-woN" secondAttribute="centerY" id="DVX-em-KaU"/>
+                            <constraint firstItem="bzj-cB-czw" firstAttribute="centerX" secondItem="tsR-hK-woN" secondAttribute="centerX" id="Dok-jZ-aZe"/>
+                            <constraint firstItem="bzj-cB-czw" firstAttribute="centerY" secondItem="tsR-hK-woN" secondAttribute="centerY" id="KrD-Hq-TRH"/>
                             <constraint firstItem="0gc-Sl-nhD" firstAttribute="centerX" secondItem="tsR-hK-woN" secondAttribute="centerX" id="QsE-qx-gR2"/>
                             <constraint firstItem="0gc-Sl-nhD" firstAttribute="centerY" secondItem="tsR-hK-woN" secondAttribute="centerY" id="mxp-zk-u9i"/>
-                            <constraint firstItem="1sO-ab-yeu" firstAttribute="centerX" secondItem="tsR-hK-woN" secondAttribute="centerX" id="oe3-Ov-mLU"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Lock" image="first" id="acW-dT-cKf"/>
                     <connections>
                         <outlet property="activityIndicator" destination="0gc-Sl-nhD" id="yCk-6p-tGu"/>
+                        <outlet property="autoLockButton" destination="63Y-Qi-ECO" id="pqX-he-Sdt"/>
                         <outlet property="lockButton" destination="1sO-ab-yeu" id="GgK-d0-g4B"/>
                     </connections>
                 </viewController>
@@ -79,7 +92,7 @@
                                         <rect key="frame" x="0.0" y="1" width="375" height="63"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="SKm-pF-tAS" id="5Hf-Gb-cYZ">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="62"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="62.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cpb-Jq-aZ6" userLabel="Registered">

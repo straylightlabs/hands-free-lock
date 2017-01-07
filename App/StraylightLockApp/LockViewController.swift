@@ -14,7 +14,14 @@ class LockViewController: UIViewController, HMHomeManagerDelegate, HMAccessoryDe
     // TODO(ryok): Move the lock mechanism to a separate LockManager singleton class.
     static weak var singleton: LockViewController?
 
+    var isAutoLockEnabled: Bool {
+        get {
+            return self.autoLockButton.isSelected
+        }
+    }
+
     @IBOutlet weak var lockButton: UIButton!
+    @IBOutlet weak var autoLockButton: UIButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
     private let homeManager = HMHomeManager()
@@ -33,6 +40,7 @@ class LockViewController: UIViewController, HMHomeManagerDelegate, HMAccessoryDe
         self.homeManager.delegate = self
         self.isUpdatingLockState = true
         self.lockButton.addTarget(self, action: #selector(didTouchLockButton), for: .touchDown)
+        self.autoLockButton.addTarget(self, action: #selector(didTouchAutoLockButton), for: .touchDown)
         self.activityIndicator.startAnimating()
 
         LockViewController.singleton = self
@@ -104,6 +112,10 @@ class LockViewController: UIViewController, HMHomeManagerDelegate, HMAccessoryDe
     func didTouchLockButton(sender: UIButton) {
         // isEnabled does not update the button state properly...
         self.updateLockState(!self.isLocked)
+    }
+
+    func didTouchAutoLockButton(sender: UIButton) {
+        sender.isSelected = !sender.isSelected
     }
 
     private func updateStateWith(_ characteristic: HMCharacteristic) {
