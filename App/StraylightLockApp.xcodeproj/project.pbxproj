@@ -7,32 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		29A7F8A8E32E4B16E8F9F46A /* Pods_StraylightLockApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 401A6532CED2C818E5A453BF /* Pods_StraylightLockApp.framework */; };
-		2A584C671E0ACD8800D391D6 /* PeripheralTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A584C661E0ACD8800D391D6 /* PeripheralTableViewCell.swift */; };
+		2A2DB1141E23533D00609F42 /* LockHttpServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A2DB1131E23533D00609F42 /* LockHttpServer.swift */; };
 		2A8FDCAE1E092E6B005B3694 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8FDCAD1E092E6B005B3694 /* AppDelegate.swift */; };
 		2A8FDCB01E092E6B005B3694 /* LockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8FDCAF1E092E6B005B3694 /* LockViewController.swift */; };
-		2A8FDCB21E092E6B005B3694 /* PeripheralsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8FDCB11E092E6B005B3694 /* PeripheralsViewController.swift */; };
 		2A8FDCB51E092E6B005B3694 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A8FDCB31E092E6B005B3694 /* Main.storyboard */; };
 		2A8FDCB71E092E6B005B3694 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A8FDCB61E092E6B005B3694 /* Assets.xcassets */; };
 		2A8FDCBA1E092E6B005B3694 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A8FDCB81E092E6B005B3694 /* LaunchScreen.storyboard */; };
 		2AA759A81E093366004AF756 /* HomeKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AA759A71E093366004AF756 /* HomeKit.framework */; };
+		3A43A14F03C004C84913F886 /* Pods_StraylightLockApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53368F02457C1B3CF3E38195 /* Pods_StraylightLockApp.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2A584C661E0ACD8800D391D6 /* PeripheralTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralTableViewCell.swift; sourceTree = "<group>"; };
+		2A2DB1131E23533D00609F42 /* LockHttpServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LockHttpServer.swift; sourceTree = "<group>"; };
 		2A8FDCAA1E092E6B005B3694 /* StraylightLockApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StraylightLockApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A8FDCAD1E092E6B005B3694 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2A8FDCAF1E092E6B005B3694 /* LockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockViewController.swift; sourceTree = "<group>"; };
-		2A8FDCB11E092E6B005B3694 /* PeripheralsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeripheralsViewController.swift; sourceTree = "<group>"; };
 		2A8FDCB41E092E6B005B3694 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2A8FDCB61E092E6B005B3694 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2A8FDCB91E092E6B005B3694 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2A8FDCBB1E092E6B005B3694 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2AA759A71E093366004AF756 /* HomeKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HomeKit.framework; path = System/Library/Frameworks/HomeKit.framework; sourceTree = SDKROOT; };
 		2AA759A91E093367004AF756 /* StraylightLockApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StraylightLockApp.entitlements; sourceTree = "<group>"; };
-		401A6532CED2C818E5A453BF /* Pods_StraylightLockApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StraylightLockApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D8028B1ECCB7C5E669AD392C /* Pods-StraylightLockApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraylightLockApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-StraylightLockApp/Pods-StraylightLockApp.debug.xcconfig"; sourceTree = "<group>"; };
-		E5D2B8457921E56B50331A7E /* Pods-StraylightLockApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraylightLockApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-StraylightLockApp/Pods-StraylightLockApp.release.xcconfig"; sourceTree = "<group>"; };
+		4A072226387DC2ECCD003E43 /* Pods-StraylightLockApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraylightLockApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-StraylightLockApp/Pods-StraylightLockApp.debug.xcconfig"; sourceTree = "<group>"; };
+		53368F02457C1B3CF3E38195 /* Pods_StraylightLockApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StraylightLockApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		90D93D1AF968FC30166248FA /* Pods-StraylightLockApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraylightLockApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-StraylightLockApp/Pods-StraylightLockApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,29 +39,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				2AA759A81E093366004AF756 /* HomeKit.framework in Frameworks */,
-				29A7F8A8E32E4B16E8F9F46A /* Pods_StraylightLockApp.framework in Frameworks */,
+				3A43A14F03C004C84913F886 /* Pods_StraylightLockApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0E7C9EE3F26561C907DAC278 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				D8028B1ECCB7C5E669AD392C /* Pods-StraylightLockApp.debug.xcconfig */,
-				E5D2B8457921E56B50331A7E /* Pods-StraylightLockApp.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 		2A8FDCA11E092E6B005B3694 = {
 			isa = PBXGroup;
 			children = (
 				2A8FDCAC1E092E6B005B3694 /* StraylightLockApp */,
 				2A8FDCAB1E092E6B005B3694 /* Products */,
 				2AA759A61E093366004AF756 /* Frameworks */,
-				0E7C9EE3F26561C907DAC278 /* Pods */,
+				81B2FCAE12BE3D877B391339 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -81,12 +70,11 @@
 				2AA759A91E093367004AF756 /* StraylightLockApp.entitlements */,
 				2A8FDCAD1E092E6B005B3694 /* AppDelegate.swift */,
 				2A8FDCAF1E092E6B005B3694 /* LockViewController.swift */,
-				2A8FDCB11E092E6B005B3694 /* PeripheralsViewController.swift */,
-				2A584C661E0ACD8800D391D6 /* PeripheralTableViewCell.swift */,
 				2A8FDCB31E092E6B005B3694 /* Main.storyboard */,
 				2A8FDCB61E092E6B005B3694 /* Assets.xcassets */,
 				2A8FDCB81E092E6B005B3694 /* LaunchScreen.storyboard */,
 				2A8FDCBB1E092E6B005B3694 /* Info.plist */,
+				2A2DB1131E23533D00609F42 /* LockHttpServer.swift */,
 			);
 			path = StraylightLockApp;
 			sourceTree = "<group>";
@@ -95,9 +83,18 @@
 			isa = PBXGroup;
 			children = (
 				2AA759A71E093366004AF756 /* HomeKit.framework */,
-				401A6532CED2C818E5A453BF /* Pods_StraylightLockApp.framework */,
+				53368F02457C1B3CF3E38195 /* Pods_StraylightLockApp.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		81B2FCAE12BE3D877B391339 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				4A072226387DC2ECCD003E43 /* Pods-StraylightLockApp.debug.xcconfig */,
+				90D93D1AF968FC30166248FA /* Pods-StraylightLockApp.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -107,12 +104,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2A8FDCBE1E092E6C005B3694 /* Build configuration list for PBXNativeTarget "StraylightLockApp" */;
 			buildPhases = (
-				76E2790C4D8F99A8AC0D2975 /* [CP] Check Pods Manifest.lock */,
+				134E85DCD6329ACDB60BB5A0 /* [CP] Check Pods Manifest.lock */,
 				2A8FDCA61E092E6B005B3694 /* Sources */,
 				2A8FDCA71E092E6B005B3694 /* Frameworks */,
 				2A8FDCA81E092E6B005B3694 /* Resources */,
-				C7F45011679F6D89BEC11D11 /* [CP] Embed Pods Frameworks */,
-				AAEDCDA5AF38577082CF9C67 /* [CP] Copy Pods Resources */,
+				56B1A178DAC16E23B19B1DE6 /* [CP] Embed Pods Frameworks */,
+				23DF3C9A2D6DC201F0635786 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -177,7 +174,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		76E2790C4D8F99A8AC0D2975 /* [CP] Check Pods Manifest.lock */ = {
+		134E85DCD6329ACDB60BB5A0 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -192,7 +189,7 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		AAEDCDA5AF38577082CF9C67 /* [CP] Copy Pods Resources */ = {
+		23DF3C9A2D6DC201F0635786 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -207,7 +204,7 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-StraylightLockApp/Pods-StraylightLockApp-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C7F45011679F6D89BEC11D11 /* [CP] Embed Pods Frameworks */ = {
+		56B1A178DAC16E23B19B1DE6 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -229,9 +226,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2A584C671E0ACD8800D391D6 /* PeripheralTableViewCell.swift in Sources */,
-				2A8FDCB21E092E6B005B3694 /* PeripheralsViewController.swift in Sources */,
 				2A8FDCAE1E092E6B005B3694 /* AppDelegate.swift in Sources */,
+				2A2DB1141E23533D00609F42 /* LockHttpServer.swift in Sources */,
 				2A8FDCB01E092E6B005B3694 /* LockViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -353,7 +349,7 @@
 		};
 		2A8FDCBF1E092E6C005B3694 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D8028B1ECCB7C5E669AD392C /* Pods-StraylightLockApp.debug.xcconfig */;
+			baseConfigurationReference = 4A072226387DC2ECCD003E43 /* Pods-StraylightLockApp.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -369,7 +365,7 @@
 		};
 		2A8FDCC01E092E6C005B3694 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E5D2B8457921E56B50331A7E /* Pods-StraylightLockApp.release.xcconfig */;
+			baseConfigurationReference = 90D93D1AF968FC30166248FA /* Pods-StraylightLockApp.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;

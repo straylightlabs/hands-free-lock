@@ -1,9 +1,9 @@
 //
-//  LockViewController.swift
-//  StraylightLockApp
+//  ViewController.swift
+//  LockApp
 //
-//  Created by Ryo Kawaguchi on 2016/12/20.
-//  Copyright © 2016 Straylight. All rights reserved.
+//  Created by Ryo Kawaguchi on 2017/01/09.
+//  Copyright © 2017 Straylight. All rights reserved.
 //
 
 import UIKit
@@ -11,39 +11,33 @@ import HomeKit
 
 class LockViewController: UIViewController, HMHomeManagerDelegate, HMAccessoryDelegate {
 
-    // TODO(ryok): Move the lock mechanism to a separate LockManager singleton class.
-    static weak var singleton: LockViewController?
-
-    var isAutoLockEnabled: Bool {
-        get {
-            return self.autoLockButton.isSelected
-        }
-    }
-
     @IBOutlet weak var lockButton: UIButton!
-    @IBOutlet weak var autoLockButton: UIButton!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+
+    var isLocked = false
 
     private let homeManager = HMHomeManager()
     private var targetLockState: HMCharacteristic?
-    private var isLocked = false
-    private var isUpdatingLockState = true {
+    private var isUpdatingLockState = false {
         didSet {
-            lockButton.isHidden = isUpdatingLockState
-            activityIndicator.isHidden = !isUpdatingLockState
+            if isUpdatingLockState {
+                UIView.animate(withDuration: 0.6) {
+                    self.lockButton.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
+                }
+            } else {
+                self.lockButton.transform = CGAffineTransform.identity
+            }
         }
     }
+
+    private var server: LockHttpServer?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.homeManager.delegate = self
-        self.isUpdatingLockState = true
         self.lockButton.addTarget(self, action: #selector(didTouchLockButton), for: .touchDown)
-        self.autoLockButton.addTarget(self, action: #selector(didTouchAutoLockButton), for: .touchDown)
-        self.activityIndicator.startAnimating()
 
-        LockViewController.singleton = self
+        self.server = LockHttpServer(lockVC: self)
     }
 
     override func didReceiveMemoryWarning() {
@@ -80,6 +74,26 @@ class LockViewController: UIViewController, HMHomeManagerDelegate, HMAccessoryDe
         }
     }
 
+    func accessoryDidUpdateReachability(_ accessory: HMAccessory) {
+        print("INFO: The lock became \(accessory.isReachable ? "reachable" : "not reachable").")
+
+        if accessory.isReachable {
+            self.updateLockButtonImage()
+        } else {
+            lockButton.setImage(#imageLiteral(resourceName: "DisconnectedButton"), for: .normal)
+        }
+    }
+
+    func accessory(_ accessory: HMAccessory, service: HMService, didUpdateValueFor characteristic: HMCharacteristic) {
+        if characteristic.characteristicType == HMCharacteristicTypeCurrentLockMechanismState {
+            self.updateStateWith(characteristic)
+        }
+    }
+
+    func didTouchLockButton(sender: UIButton) {
+        self.updateLockState(!self.isLocked)
+    }
+
     func updateLockState(_ shouldLock: Bool) {
         if self.isUpdatingLockState || self.isLocked == shouldLock {
             return
@@ -99,31 +113,16 @@ class LockViewController: UIViewController, HMHomeManagerDelegate, HMAccessoryDe
         }
     }
 
-    func accessoryDidUpdateReachability(_ accessory: HMAccessory) {
-        print("INFO: The lock became \(accessory.isReachable ? "reachable" : "not reachable").")
-    }
-
-    func accessory(_ accessory: HMAccessory, service: HMService, didUpdateValueFor characteristic: HMCharacteristic) {
-        if characteristic.characteristicType == HMCharacteristicTypeCurrentLockMechanismState {
-            self.updateStateWith(characteristic)
-        }
-    }
-
-    func didTouchLockButton(sender: UIButton) {
-        // isEnabled does not update the button state properly...
-        self.updateLockState(!self.isLocked)
-    }
-
-    func didTouchAutoLockButton(sender: UIButton) {
-        sender.isSelected = !sender.isSelected
-    }
-
     private func updateStateWith(_ characteristic: HMCharacteristic) {
         self.isLocked = characteristic.value as? Int == 1
-        self.lockButton.isSelected = !self.isLocked
         self.isUpdatingLockState = false
+        self.updateLockButtonImage()
 
         print("INFO: Lock state updated: \(self.isLocked ? "LOCKED" : "UNLOCKED").")
+    }
+
+    private func updateLockButtonImage() {
+        lockButton.setImage(self.isLocked ? #imageLiteral(resourceName: "LockButton") : #imageLiteral(resourceName: "UnlockButton"), for: .normal)
     }
 
 }
