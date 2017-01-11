@@ -4,6 +4,7 @@ var lastDetectionTimeMap = {};
 var macAddressWhitelist = new Set([
     'CD:A5:D3:FA:A1:02',  // BLE Nano (broken?)
     'EF:B0:DA:45:8E:B8',  // TrackR
+    'FD:81:9A:14:4E:ED',  // Ryo's Tile`
 ]);
 
 function send(action) {
@@ -45,7 +46,7 @@ exports.onMessage = function(message) {
   console.info('RECEIVED: ' + message);
   var keepLoggedIn = false;
   if (lastDetectionTimeMap[data.macAddress] === undefined) {
-    if (data.rssi > -60) {
+    if (data.rssi > -80) {
       console.info('DETECTED: ' + data.macAddress);
       unlock();
       keepLoggedIn = true;
