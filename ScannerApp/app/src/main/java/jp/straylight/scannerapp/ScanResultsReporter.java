@@ -17,8 +17,13 @@ class ScanResultsReporter {
         connectWebSocket(url);
     }
 
-    public void sendMessage(String message) {
-        webSocketClient.send(message);
+    public void send(int rssi, String macAddress) {
+        String report = String.format("{\"rssi\":%d,\"macAddress\":\"%s\"}",rssi, macAddress);
+        webSocketClient.send(report);
+    }
+
+    public void disconnect() {
+        webSocketClient.close();
     }
 
     private void connectWebSocket(String url) {

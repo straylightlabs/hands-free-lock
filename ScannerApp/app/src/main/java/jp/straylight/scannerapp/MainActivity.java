@@ -8,11 +8,11 @@ import com.polidea.rxandroidble.RxBleScanResult;
 import com.polidea.rxandroidble.exceptions.BleScanException;
 
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.util.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import android.widget.Toast;
 import android.support.v7.widget.LinearLayoutManager;
 
@@ -21,14 +21,10 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final String REPORT_URL = "ws://192.168.0.5:8080";
 
-    @BindView(R.id.scan_toggle_btn)
-    Button scanToggleButton;
     @BindView(R.id.scan_results)
     RecyclerView recyclerView;
 
@@ -41,18 +37,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         ButterKnife.bind(this);
         rxBleClient = ScannerApplication.getRxBleClient(this);
-        resultsReporter = new ScanResultsReporter(REPORT_URL);
         configureResultList();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (isScanning()) {
+        if (scanSubscription != null) {
             scanSubscription.unsubscribe();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        subscribe();
     }
 
     private void configureResultList() {
@@ -76,43 +78,37 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "onAdapterItemClick:" + macAddress);
     }
 
-    @OnClick(R.id.scan_toggle_btn)
-    public void onScanToggleClick() {
-        if (isScanning()) {
-            scanSubscription.unsubscribe();
-        } else {
-            scanSubscription = rxBleClient.scanBleDevices()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnUnsubscribe(new Action0() {
-                        @Override
-                        public void call() {
-                            clearSubscription();
-                        }
-                    })
-                    .subscribe(new Subscriber<RxBleScanResult>() {
-                        @Override
-                        public void onCompleted() {
-                        }
+    private void subscribe() {
+        resultsReporter = new ScanResultsReporter(REPORT_URL);
+        scanSubscription = rxBleClient.scanBleDevices()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnUnsubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        clearSubscription();
+                    }
+                })
+                .subscribe(new Subscriber<RxBleScanResult>() {
+                    @Override
+                    public void onCompleted() {
+                    }
 
-                        @Override
-                        public void onError(Throwable e) {
-                            onScanFailure(e);
-                        }
+                    @Override
+                    public void onError(Throwable e) {
+                        onScanFailure(e);
+                    }
 
-                        @Override
-                        public void onNext(RxBleScanResult rxBleScanResult) {
-                            processScanResult(rxBleScanResult);
-                        }
-                    });
-        }
-        updateButtonUIState();
+                    @Override
+                    public void onNext(RxBleScanResult rxBleScanResult) {
+                        processScanResult(rxBleScanResult);
+                    }
+                });
     }
 
     private void processScanResult(RxBleScanResult result) {
         String macAddress = result.getBleDevice().getMacAddress();
         int rssi = result.getRssi();
-        String report = String.format("{rssi:%d,macAddress:\"%s\"}",rssi, macAddress);
-        //resultsReporter.sendMessage(report);
+        resultsReporter.send(rssi, macAddress);
         resultsAdapter.addScanResult(result);
     }
 
@@ -147,14 +143,7 @@ public class MainActivity extends AppCompatActivity {
     private void clearSubscription() {
         scanSubscription = null;
         resultsAdapter.clearScanResults();
-        updateButtonUIState();
-    }
-
-    private void updateButtonUIState() {
-        scanToggleButton.setText(isScanning() ? R.string.stop_scan : R.string.start_scan);
-    }
-
-    private boolean isScanning() {
-        return scanSubscription != null;
+        resultsReporter.disconnect();
+        resultsReporter = null;
     }
 }
