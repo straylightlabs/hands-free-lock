@@ -42,7 +42,7 @@ exports.onMessage = function(message) {
   if (!macAddressWhitelist.has(data.macAddress)) {
     return;
   }
-  console.debug('RECEIVED: ' + message);
+  console.info('RECEIVED: ' + message);
   var keepLoggedIn = false;
   if (lastDetectionTimeMap[data.macAddress] === undefined) {
     if (data.rssi > -60) {
@@ -62,15 +62,17 @@ exports.onMessage = function(message) {
 
 exports.checkLogOut = function() {
   var newMap = {};
+  var detected = false;
   for (var key in lastDetectionTimeMap) {
     if (new Date().getTime() < lastDetectionTimeMap[key].getTime() + 60000) {
       newMap[key] = lastDetectionTimeMap[key];
+      detected = true;
     } else {
       console.info('LOST: ' + key);
     }
   }
   lastDetectionTimeMap = newMap;
-  if (newMap.length == 0) {
+  if (!detected) {
     lock();
   }
 }
