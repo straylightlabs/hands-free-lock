@@ -6,6 +6,7 @@ const http = require('http');
 const path = require('path');
 const url = require('url');
 const router = require('./router');
+const webSocketController = require('./controllers/web-socket-controller.js')
 
 const port = 8080;
 
@@ -14,9 +15,11 @@ const wss = new WebSocketServer({ server: server });
 wss.on('connection', function (ws) {
   var location = url.parse(ws.upgradeReq.url, true);
   ws.on('message', function (message) {
-    console.log('received: %s', message);
+    webSocketController.onMessage(message);
   });
 });
+
+setInterval(webSocketController.checkLogOut, 5000);
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
