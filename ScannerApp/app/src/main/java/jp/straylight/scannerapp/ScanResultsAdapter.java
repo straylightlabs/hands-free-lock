@@ -1,13 +1,12 @@
 package jp.straylight.scannerapp;
 
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.le.ScanResult;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.polidea.rxandroidble.RxBleDevice;
-import com.polidea.rxandroidble.RxBleScanResult;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,13 +34,13 @@ class ScanResultsAdapter extends RecyclerView.Adapter<ScanResultsAdapter.ViewHol
         void onAdapterViewClick(View view);
     }
 
-    private static final Comparator<RxBleScanResult> SORTING_COMPARATOR = new Comparator<RxBleScanResult>() {
+    private static final Comparator<ScanResult> SORTING_COMPARATOR = new Comparator<ScanResult>() {
         @Override
-        public int compare(RxBleScanResult lhs, RxBleScanResult rhs) {
-            return lhs.getBleDevice().getMacAddress().compareTo(rhs.getBleDevice().getMacAddress());
+        public int compare(ScanResult lhs, ScanResult rhs) {
+            return lhs.getDevice().getAddress().compareTo(rhs.getDevice().getAddress());
         }
     };
-    private final List<RxBleScanResult> data = new ArrayList<>();
+    private final List<ScanResult> data = new ArrayList<>();
     private OnAdapterItemClickListener onAdapterItemClickListener;
     private final View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
@@ -52,10 +51,10 @@ class ScanResultsAdapter extends RecyclerView.Adapter<ScanResultsAdapter.ViewHol
         }
     };
 
-    public void addScanResult(RxBleScanResult bleScanResult) {
+    public void addScanResult(ScanResult bleScanResult) {
         // Not the best way to ensure distinct devices, just for sake on the demo.
         for (int i = 0; i < data.size(); i++) {
-            if (data.get(i).getBleDevice().equals(bleScanResult.getBleDevice())) {
+            if (data.get(i).getDevice().equals(bleScanResult.getDevice())) {
                 data.set(i, bleScanResult);
                 notifyItemChanged(i);
                 return;
@@ -72,7 +71,7 @@ class ScanResultsAdapter extends RecyclerView.Adapter<ScanResultsAdapter.ViewHol
         notifyDataSetChanged();
     }
 
-    public RxBleScanResult getItemAtPosition(int childAdapterPosition) {
+    public ScanResult getItemAtPosition(int childAdapterPosition) {
         return data.get(childAdapterPosition);
     }
 
@@ -83,10 +82,11 @@ class ScanResultsAdapter extends RecyclerView.Adapter<ScanResultsAdapter.ViewHol
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final RxBleScanResult rxBleScanResult = data.get(position);
-        final RxBleDevice bleDevice = rxBleScanResult.getBleDevice();
-        holder.line1.setText(String.format("%s", bleDevice.getMacAddress()));
-        holder.line2.setText(String.format("RSSI=%d", rxBleScanResult.getRssi()));
+        final ScanResult bleScanResult = data.get(position);
+        final BluetoothDevice bleDevice = bleScanResult.getDevice();
+        String name = bleDevice.getName() == null ? "Unknown device" : bleDevice.getName();
+        holder.line1.setText(String.format("%s (%s)", name, bleDevice.getAddress()));
+        holder.line2.setText(String.format("RSSI=%d", bleScanResult.getRssi()));
     }
 
     @Override
