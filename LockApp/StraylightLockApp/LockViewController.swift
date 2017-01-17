@@ -8,6 +8,7 @@
 
 import UIKit
 import HomeKit
+import Toaster
 
 class LockViewController: UIViewController, HMHomeManagerDelegate, HMAccessoryDelegate {
 
@@ -17,6 +18,8 @@ class LockViewController: UIViewController, HMHomeManagerDelegate, HMAccessoryDe
 
     private let homeManager = HMHomeManager()
     private var targetLockState: HMCharacteristic?
+    private var immutableUntil = Date(timeIntervalSince1970: 0)
+    private var waitToLockTimer: Timer?
     private var isUpdatingLockState = false {
         didSet {
             if isUpdatingLockState {
@@ -91,11 +94,31 @@ class LockViewController: UIViewController, HMHomeManagerDelegate, HMAccessoryDe
     }
 
     func didTouchLockButton(sender: UIButton) {
-        self.updateLockState(!self.isLocked)
+        if !self.isLocked {
+            if self.waitToLockTimer == nil {
+                self.waitToLockTimer = Timer.scheduledTimer(timeInterval: 20.0, target: self, selector: #selector(didWaitToLock), userInfo: nil, repeats: false)
+                self.lockButton.transform = CGAffineTransform.identity
+                UIView.animate(withDuration: 0.6, delay: 0.0, options: [.repeat, .curveEaseOut, .autoreverse], animations: {
+                    self.lockButton.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+                }, completion: nil)
+            }
+        } else {
+            self.updateLockState(false)
+        }
+    }
+
+    func didWaitToLock() {
+        self.updateLockState(true)
+        self.immutableUntil = Date(timeIntervalSinceNow: 60.0)
+        self.waitToLockTimer = nil
     }
 
     func updateLockState(_ shouldLock: Bool) {
         if self.isUpdatingLockState || self.isLocked == shouldLock {
+            return
+        }
+        if self.immutableUntil.timeIntervalSinceNow >= 0 {
+            Toast(text: "The lock still in immutable state").show()
             return
         }
 

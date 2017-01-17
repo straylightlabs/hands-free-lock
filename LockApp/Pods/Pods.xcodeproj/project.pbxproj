@@ -7,161 +7,252 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0ACD7803EAB0F62CA732EC15194DDF12 /* Pods-StraylightLockApp-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = C50C21797A4CB5B737F50F022677B205 /* Pods-StraylightLockApp-dummy.m */; };
-		260164F89ECF09D347EFB4242247E99C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBB3DE36805AF21409EC968A9691732F /* Foundation.framework */; };
-		264D563870B01AD7B290B0C88AF58C68 /* HttpResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D32BEF82A32DA8051C83140668A15C0 /* HttpResponse.swift */; };
-		2C4FF31E34A4A83B1F3B7FD60CE1C361 /* String+File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AEEBC81D06F241E555C6E16876585F9 /* String+File.swift */; };
-		2D136634854D8D645BBD2C149104A261 /* String+BASE64.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4038776CCF5C791FEDE4A0D2A044D14 /* String+BASE64.swift */; };
-		2F2E2479E2A0B13A4DE40F720894129F /* Scopes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B4969B9281E6B53615AC9CBD2693D5 /* Scopes.swift */; };
-		3DA127766436418D66BAB4A406B99608 /* Pods-StraylightLockApp-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = B574E34E94F8DF7C41FCF129B7013E8E /* Pods-StraylightLockApp-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4436E3C8058FE81DCC11932E2D0E5F02 /* Socket+File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4676B34B3B0C536D44D20DB9EBF2D8C5 /* Socket+File.swift */; };
-		4C56237B1EB2D176BC08374D26AF35C6 /* HttpParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2018E2553AB29E397F56CC79AE7AF5E5 /* HttpParser.swift */; };
-		5266BD90C7444E3D03B1871ED3D2E667 /* HttpRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D240E4350B964FCE575C283D30AD4F8 /* HttpRouter.swift */; };
-		5271227CCF2F8FDAB7731FA68B1ED83E /* HttpRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74E3E2964B137572305CD053FAE22F52 /* HttpRequest.swift */; };
-		55DBD3CD8028859E1C32E1D7C5E9BD53 /* WebSockets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F7B33365FCEEFBA48111EBDB758951 /* WebSockets.swift */; };
-		61D2BCC0AD6375F66A54DDD5C5CDEF73 /* String+Misc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CA29A0ACF4D17FF93C8183CF2E6068 /* String+Misc.swift */; };
-		6AA9C5A76D76B0151F1D4EA794447E0C /* HttpServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8B9A4FEF954455A863A7A380D698D3 /* HttpServer.swift */; };
-		6ABEDF9ECD952D60F71D3B695005E956 /* Socket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A015711BD0B80DF734FD2E3395C4D /* Socket.swift */; };
-		6D7974D22AE34FDB5817976CAA972FB8 /* String+SHA1.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA82E21B7A7FAC12248F26F977E0A36E /* String+SHA1.swift */; };
-		7410B0D7D40E781843BFDBCDB853F5A8 /* Process.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFCC662A4D7162E21F0C63275856E00D /* Process.swift */; };
-		8EB866ABE449215F5A0B6E8768FAFDF2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBB3DE36805AF21409EC968A9691732F /* Foundation.framework */; };
-		91B1F0F4BA782C4953AB4F31E72D65EC /* Errno.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22FE77D157C1B627774F03B067302F /* Errno.swift */; };
-		98DD590EE4547C0F82717C176EB21E0B /* Swifter-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = ADEF6F7F606D39D2316E3F8B79D257DB /* Swifter-dummy.m */; };
-		A00D99C0032F125B002284DD4CB7F094 /* DemoServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C04FB8CE574AE23BB9197B8F05017D /* DemoServer.swift */; };
-		CBD9A97F993EFFD528B232F449194894 /* Swifter-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = DBFB45BD9FED6E5F2AF1D394CBE71B73 /* Swifter-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		DCACE8B7893CA9CE251BCDB387B9BC3F /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038F170F9CB467BC18410909EBFDDC7B /* Files.swift */; };
-		DE1A25586C48864DAFBEACA765516E4E /* HttpServerIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DB0DE180BD46D7A44E7256D868C724E /* HttpServerIO.swift */; };
-		F98F89643EE8EB316DAC5E0E9AC40C29 /* Socket+Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92A70BBADC8AE78BFA925BC3D6A06EAF /* Socket+Server.swift */; };
+		1516D3124D74615E830FF48128CB1CE3 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94727448FC919402F22E5FA51ED8DF4D /* ToastView.swift */; };
+		30B0C4788E6F00046F81C2B099E5CC98 /* Toaster-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 151BEE8E21DBB058C6251AEE14936AE8 /* Toaster-dummy.m */; };
+		3779B21FEFB98FAB66F10806900873F2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BF675A168132FD52AED630F977FE906 /* UIKit.framework */; };
+		3CF846B5B8B4A235ACB3502E7709B7E8 /* Toaster.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AAF8661231CA0C3450EBBA776589ACB /* Toaster.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		43A7C3458298C2FA634BB725EEDBACAA /* String+Misc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C374E249C596A0976E673F6DDCD83A8 /* String+Misc.swift */; };
+		4E17B58E37C3D928F275DC7CB9B156AD /* Socket+Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = A342BA89E2856674FDE3A6D0DA1065EF /* Socket+Server.swift */; };
+		54AC6201AFB478FF106791366E111274 /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60587212B067EBCCE7CC5A369FDB7227 /* Files.swift */; };
+		5A980AB4093F52036B8F3053904AC726 /* Socket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76E90393A0B92B6FFBEEA5CED5DEB12A /* Socket.swift */; };
+		60D2F0994C0B7C5F0AFC1062D3EC4037 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC32878090C4B2B93381956161EC0930 /* Foundation.framework */; };
+		621F5998B066D1D83E124890601771DD /* HttpParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477BD73C49B7D116B25B0E1E6032BD34 /* HttpParser.swift */; };
+		6504E70F00A345C1399AF7A7793E07DD /* Toaster-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = F38ACDB68D4B4C32ED483D604C9012A2 /* Toaster-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		75E6088ACAFD3B7C5A5AE5300DE7F747 /* WebSockets.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0EE240CC11BFF0715EE0FE513743AC /* WebSockets.swift */; };
+		77105588F44B199B7A95D6355A3C4006 /* Errno.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0FA23483E5E76271451192236432CB9 /* Errno.swift */; };
+		794083C13C1D4F552D03745D8A79B421 /* String+SHA1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D542AAB3D7A4ED07DF85DA200DC194B /* String+SHA1.swift */; };
+		79BF23C1D93CE4841D7624AF34FCB6EC /* DemoServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1CA9A234885B1C9F6ECDA380E05215F /* DemoServer.swift */; };
+		95AFA8B1E94E1E7CE499642063FAE75D /* HttpRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F23437C5F5F86F2FC9D2CE70AA59D9 /* HttpRouter.swift */; };
+		96FA365523064A9D510156A7B2327A82 /* Swifter-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = DFE92FDFAB6E0792533286BF53BCA5AC /* Swifter-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		99C73361A7BC1F1F5619C9A0A856D97A /* ToastCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88B8A39AF84687252124A74CF8E97F2 /* ToastCenter.swift */; };
+		AB87D0A2294402F689B3AF085AD2731E /* ToastWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76453DA9771E742A5E1DB9DB674D4D25 /* ToastWindow.swift */; };
+		AD4F4F785936BAAD9CC4530B080B3AA5 /* Pods-StraylightLockApp-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = B574E34E94F8DF7C41FCF129B7013E8E /* Pods-StraylightLockApp-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B054332553137F9431310547E595B80E /* HttpResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747A6EFF67A70E5C7EAE7EEC21A002BB /* HttpResponse.swift */; };
+		B2BDC6C16CE62CD9B648A353FDDCDCAA /* String+BASE64.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C7B153D3152E4DA8C8A3C981E853E1 /* String+BASE64.swift */; };
+		B79B4EA17B5526A7D2E056BCAAAFC065 /* Process.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CF5174189CA5383D13364EFAC57A050 /* Process.swift */; };
+		B81BCA23E13E2FAF3F0086AC78B6FD50 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC32878090C4B2B93381956161EC0930 /* Foundation.framework */; };
+		C15B9179914516E37767694B30F35EE9 /* HttpRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A69840A40FB8B1825602F8CB6B2C7186 /* HttpRequest.swift */; };
+		D089836C388AD507D1EAF6F01D13F0E0 /* HttpServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432C814DE94CF46C654BF90013797CAE /* HttpServer.swift */; };
+		D0FBC8513459A37965B13E58BDD21C6C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0203FCF2E38F9E0B8C4E69853543A3E /* QuartzCore.framework */; };
+		D384073A49E607C7D0B9F1F06293C906 /* Socket+File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55219728B347B24D85213B7DC5B1372A /* Socket+File.swift */; };
+		DBD6E2540A6265FFEBFDC619744DD316 /* HttpServerIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 443B63437AC1A9A3D578D8A38AAC209F /* HttpServerIO.swift */; };
+		E1FC9EAFD49C01B57288EB1E5100E2AF /* Scopes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452702833C622C1ADA37BDE103BC7B7C /* Scopes.swift */; };
+		E338E5B76FA315F868E2E6DB619C71FE /* Swifter-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 389AD343172635039A9F979221E3E16F /* Swifter-dummy.m */; };
+		E38731BBEA2FA87585DD81DA8FABB438 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC32878090C4B2B93381956161EC0930 /* Foundation.framework */; };
+		E9F0872B3C358CD4E61689BEF9D59744 /* String+File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E8EB436AC82EC7FE305CFD0109517A /* String+File.swift */; };
+		F478EA3EB988413F7B52C52DF3175109 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941D010893468297D92C79B3F1060A68 /* Toast.swift */; };
+		F9348A4E214780A3ED5F329B34A9D0E2 /* Pods-StraylightLockApp-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = C50C21797A4CB5B737F50F022677B205 /* Pods-StraylightLockApp-dummy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		07621B34426130B19288D20E161944B0 /* PBXContainerItemProxy */ = {
+		476873A1150F5CBB1BB95BA94026137A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 118717B3BF4474B4E8CB32152D9ADF0B;
+			remoteGlobalIDString = 0162603E3FD0AEF93EBBD5E4EF268CC4;
+			remoteInfo = Toaster;
+		};
+		ED3802941AEE96CF24272EE9243CFD60 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8945BECAE9A6B47F872AD59337C07D17;
 			remoteInfo = Swifter;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		038F170F9CB467BC18410909EBFDDC7B /* Files.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Files.swift; path = Sources/Files.swift; sourceTree = "<group>"; };
-		0D32BEF82A32DA8051C83140668A15C0 /* HttpResponse.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HttpResponse.swift; path = Sources/HttpResponse.swift; sourceTree = "<group>"; };
-		1A22FE77D157C1B627774F03B067302F /* Errno.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Errno.swift; path = Sources/Errno.swift; sourceTree = "<group>"; };
-		1D0A015711BD0B80DF734FD2E3395C4D /* Socket.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Socket.swift; path = Sources/Socket.swift; sourceTree = "<group>"; };
-		1D240E4350B964FCE575C283D30AD4F8 /* HttpRouter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HttpRouter.swift; path = Sources/HttpRouter.swift; sourceTree = "<group>"; };
-		2018E2553AB29E397F56CC79AE7AF5E5 /* HttpParser.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HttpParser.swift; path = Sources/HttpParser.swift; sourceTree = "<group>"; };
-		305A2C645EF49F2AAE2A30F664005F44 /* Swifter-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Swifter-prefix.pch"; sourceTree = "<group>"; };
-		41F7B33365FCEEFBA48111EBDB758951 /* WebSockets.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WebSockets.swift; path = Sources/WebSockets.swift; sourceTree = "<group>"; };
-		4676B34B3B0C536D44D20DB9EBF2D8C5 /* Socket+File.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Socket+File.swift"; path = "Sources/Socket+File.swift"; sourceTree = "<group>"; };
-		4AEEBC81D06F241E555C6E16876585F9 /* String+File.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "String+File.swift"; path = "Sources/String+File.swift"; sourceTree = "<group>"; };
-		4F8B9A4FEF954455A863A7A380D698D3 /* HttpServer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HttpServer.swift; path = Sources/HttpServer.swift; sourceTree = "<group>"; };
-		54C04FB8CE574AE23BB9197B8F05017D /* DemoServer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DemoServer.swift; path = Sources/DemoServer.swift; sourceTree = "<group>"; };
+		00DBFD26D803C8DE3E64BB9D894F37D3 /* Swifter.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Swifter.xcconfig; sourceTree = "<group>"; };
+		0D542AAB3D7A4ED07DF85DA200DC194B /* String+SHA1.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "String+SHA1.swift"; path = "Sources/String+SHA1.swift"; sourceTree = "<group>"; };
+		151BEE8E21DBB058C6251AEE14936AE8 /* Toaster-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Toaster-dummy.m"; sourceTree = "<group>"; };
+		2407A702C82BCA8EE4B4A4B992CEF7A9 /* Pods_StraylightLockApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_StraylightLockApp.framework; path = "Pods-StraylightLockApp.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C374E249C596A0976E673F6DDCD83A8 /* String+Misc.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "String+Misc.swift"; path = "Sources/String+Misc.swift"; sourceTree = "<group>"; };
+		389AD343172635039A9F979221E3E16F /* Swifter-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Swifter-dummy.m"; sourceTree = "<group>"; };
+		38F23437C5F5F86F2FC9D2CE70AA59D9 /* HttpRouter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HttpRouter.swift; path = Sources/HttpRouter.swift; sourceTree = "<group>"; };
+		3AAF8661231CA0C3450EBBA776589ACB /* Toaster.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Toaster.h; path = Sources/Toaster.h; sourceTree = "<group>"; };
+		3CF5174189CA5383D13364EFAC57A050 /* Process.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Process.swift; path = Sources/Process.swift; sourceTree = "<group>"; };
+		432C814DE94CF46C654BF90013797CAE /* HttpServer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HttpServer.swift; path = Sources/HttpServer.swift; sourceTree = "<group>"; };
+		443B63437AC1A9A3D578D8A38AAC209F /* HttpServerIO.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HttpServerIO.swift; path = Sources/HttpServerIO.swift; sourceTree = "<group>"; };
+		452702833C622C1ADA37BDE103BC7B7C /* Scopes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Scopes.swift; path = Sources/Scopes.swift; sourceTree = "<group>"; };
+		477BD73C49B7D116B25B0E1E6032BD34 /* HttpParser.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HttpParser.swift; path = Sources/HttpParser.swift; sourceTree = "<group>"; };
+		4DFE2BF9435F526F05CC7B86D8F3453E /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		52CDF791B4D1A6F9AA8D34F2739279EE /* Toaster.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Toaster.xcconfig; sourceTree = "<group>"; };
+		535A7B2FA582A00EAF6A0654407A3051 /* Toaster.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = Toaster.modulemap; sourceTree = "<group>"; };
+		55219728B347B24D85213B7DC5B1372A /* Socket+File.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Socket+File.swift"; path = "Sources/Socket+File.swift"; sourceTree = "<group>"; };
+		5B663436D1B503FC22227BAF6EE808F5 /* Swifter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Swifter.framework; path = Swifter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5BF675A168132FD52AED630F977FE906 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		5D505F37AE25F284AFE672B4996B37C1 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		60587212B067EBCCE7CC5A369FDB7227 /* Files.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Files.swift; path = Sources/Files.swift; sourceTree = "<group>"; };
 		64373FB39203A3FD45497634E292A546 /* Pods-StraylightLockApp-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-StraylightLockApp-frameworks.sh"; sourceTree = "<group>"; };
-		69AC57842E7B14E7A68A2105F85AD6CB /* Swifter.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = Swifter.modulemap; sourceTree = "<group>"; };
-		74E3E2964B137572305CD053FAE22F52 /* HttpRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HttpRequest.swift; path = Sources/HttpRequest.swift; sourceTree = "<group>"; };
+		65E8EB436AC82EC7FE305CFD0109517A /* String+File.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "String+File.swift"; path = "Sources/String+File.swift"; sourceTree = "<group>"; };
+		747A6EFF67A70E5C7EAE7EEC21A002BB /* HttpResponse.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HttpResponse.swift; path = Sources/HttpResponse.swift; sourceTree = "<group>"; };
 		7561DA52DA4E34B8F6A56AFC1D185351 /* Pods-StraylightLockApp-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-StraylightLockApp-acknowledgements.plist"; sourceTree = "<group>"; };
+		76453DA9771E742A5E1DB9DB674D4D25 /* ToastWindow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ToastWindow.swift; path = Sources/ToastWindow.swift; sourceTree = "<group>"; };
+		76E90393A0B92B6FFBEEA5CED5DEB12A /* Socket.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Socket.swift; path = Sources/Socket.swift; sourceTree = "<group>"; };
 		7BFD044640F92D057E0447041E9D2FD0 /* Pods-StraylightLockApp-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-StraylightLockApp-resources.sh"; sourceTree = "<group>"; };
-		82CA29A0ACF4D17FF93C8183CF2E6068 /* String+Misc.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "String+Misc.swift"; path = "Sources/String+Misc.swift"; sourceTree = "<group>"; };
 		82E429C4CCF173BEEF2F93A81E27CA0D /* Pods-StraylightLockApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-StraylightLockApp.release.xcconfig"; sourceTree = "<group>"; };
-		8DB0DE180BD46D7A44E7256D868C724E /* HttpServerIO.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HttpServerIO.swift; path = Sources/HttpServerIO.swift; sourceTree = "<group>"; };
-		92A70BBADC8AE78BFA925BC3D6A06EAF /* Socket+Server.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Socket+Server.swift"; path = "Sources/Socket+Server.swift"; sourceTree = "<group>"; };
 		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		941D010893468297D92C79B3F1060A68 /* Toast.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Toast.swift; path = Sources/Toast.swift; sourceTree = "<group>"; };
+		94727448FC919402F22E5FA51ED8DF4D /* ToastView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ToastView.swift; path = Sources/ToastView.swift; sourceTree = "<group>"; };
 		9E3C2FEDD8019889BED02192E198E6C6 /* Pods-StraylightLockApp.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = "Pods-StraylightLockApp.modulemap"; sourceTree = "<group>"; };
-		A3910C3901482F2E20320BE51A61E91E /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		ADEF6F7F606D39D2316E3F8B79D257DB /* Swifter-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Swifter-dummy.m"; sourceTree = "<group>"; };
-		B4038776CCF5C791FEDE4A0D2A044D14 /* String+BASE64.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "String+BASE64.swift"; path = "Sources/String+BASE64.swift"; sourceTree = "<group>"; };
+		A0FA23483E5E76271451192236432CB9 /* Errno.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Errno.swift; path = Sources/Errno.swift; sourceTree = "<group>"; };
+		A342BA89E2856674FDE3A6D0DA1065EF /* Socket+Server.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Socket+Server.swift"; path = "Sources/Socket+Server.swift"; sourceTree = "<group>"; };
+		A556C5E416C1BC2C3A2677061B95C9E8 /* Swifter-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Swifter-prefix.pch"; sourceTree = "<group>"; };
+		A69840A40FB8B1825602F8CB6B2C7186 /* HttpRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HttpRequest.swift; path = Sources/HttpRequest.swift; sourceTree = "<group>"; };
 		B574E34E94F8DF7C41FCF129B7013E8E /* Pods-StraylightLockApp-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-StraylightLockApp-umbrella.h"; sourceTree = "<group>"; };
-		B6D9D9736AC70996C87A1CEA5AEF7E20 /* Pods_StraylightLockApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_StraylightLockApp.framework; path = "Pods-StraylightLockApp.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BA9875FDDE94888E07098EF77FD0FAF5 /* Swifter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Swifter.framework; path = Swifter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C50C21797A4CB5B737F50F022677B205 /* Pods-StraylightLockApp-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-StraylightLockApp-dummy.m"; sourceTree = "<group>"; };
-		C99AE4773991ED68557CE021BBF27B51 /* Swifter.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Swifter.xcconfig; sourceTree = "<group>"; };
-		CBB3DE36805AF21409EC968A9691732F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		CFCC662A4D7162E21F0C63275856E00D /* Process.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Process.swift; path = Sources/Process.swift; sourceTree = "<group>"; };
-		D8B4969B9281E6B53615AC9CBD2693D5 /* Scopes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Scopes.swift; path = Sources/Scopes.swift; sourceTree = "<group>"; };
-		DA82E21B7A7FAC12248F26F977E0A36E /* String+SHA1.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "String+SHA1.swift"; path = "Sources/String+SHA1.swift"; sourceTree = "<group>"; };
-		DBFB45BD9FED6E5F2AF1D394CBE71B73 /* Swifter-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Swifter-umbrella.h"; sourceTree = "<group>"; };
+		C9135BED5945275DAAD00A53B814B662 /* Toaster.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Toaster.framework; path = Toaster.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9B579FC7FC7794EE58F09DC4A8689D3 /* Toaster-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Toaster-prefix.pch"; sourceTree = "<group>"; };
+		D88B8A39AF84687252124A74CF8E97F2 /* ToastCenter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ToastCenter.swift; path = Sources/ToastCenter.swift; sourceTree = "<group>"; };
+		DD0EE240CC11BFF0715EE0FE513743AC /* WebSockets.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WebSockets.swift; path = Sources/WebSockets.swift; sourceTree = "<group>"; };
+		DFE92FDFAB6E0792533286BF53BCA5AC /* Swifter-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Swifter-umbrella.h"; sourceTree = "<group>"; };
+		E0203FCF2E38F9E0B8C4E69853543A3E /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.0.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
+		E2C7B153D3152E4DA8C8A3C981E853E1 /* String+BASE64.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "String+BASE64.swift"; path = "Sources/String+BASE64.swift"; sourceTree = "<group>"; };
+		E3006F85BBD2A0A6076D9D289C47A582 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EC32878090C4B2B93381956161EC0930 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		EF80AB6FBE1B4F2E2E9C23B25DC02159 /* Pods-StraylightLockApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-StraylightLockApp.debug.xcconfig"; sourceTree = "<group>"; };
+		F1CA9A234885B1C9F6ECDA380E05215F /* DemoServer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DemoServer.swift; path = Sources/DemoServer.swift; sourceTree = "<group>"; };
+		F38ACDB68D4B4C32ED483D604C9012A2 /* Toaster-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Toaster-umbrella.h"; sourceTree = "<group>"; };
 		F9F0A1DAB62D9A6AA07D530355F3063A /* Pods-StraylightLockApp-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-StraylightLockApp-acknowledgements.markdown"; sourceTree = "<group>"; };
+		FB8BA23B0151109F1D54E2EC91F53D59 /* Swifter.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = Swifter.modulemap; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		CB0D7E99028A99D463BAE6366BA870A0 /* Frameworks */ = {
+		0723DEF313118B93D4628AE3DE8DB987 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				260164F89ECF09D347EFB4242247E99C /* Foundation.framework in Frameworks */,
+				60D2F0994C0B7C5F0AFC1062D3EC4037 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		FC2A1C375E3A37BF6173AABD533C3CB5 /* Frameworks */ = {
+		C0EDD0943F50C523DFF8BD20C07D6E1A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8EB866ABE449215F5A0B6E8768FAFDF2 /* Foundation.framework in Frameworks */,
+				B81BCA23E13E2FAF3F0086AC78B6FD50 /* Foundation.framework in Frameworks */,
+				D0FBC8513459A37965B13E58BDD21C6C /* QuartzCore.framework in Frameworks */,
+				3779B21FEFB98FAB66F10806900873F2 /* UIKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2FD9D74F928A7C446B1081B02B9CDB4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E38731BBEA2FA87585DD81DA8FABB438 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5496569EFDB2F646E9958296B794B87C /* Pods */ = {
+		0BB6E43FA3DF1CEA555EBF481C635B2C /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				E317567DD6CFBCC6BD8E2CCC3334E736 /* Swifter */,
+				E3006F85BBD2A0A6076D9D289C47A582 /* Info.plist */,
+				535A7B2FA582A00EAF6A0654407A3051 /* Toaster.modulemap */,
+				52CDF791B4D1A6F9AA8D34F2739279EE /* Toaster.xcconfig */,
+				151BEE8E21DBB058C6251AEE14936AE8 /* Toaster-dummy.m */,
+				C9B579FC7FC7794EE58F09DC4A8689D3 /* Toaster-prefix.pch */,
+				F38ACDB68D4B4C32ED483D604C9012A2 /* Toaster-umbrella.h */,
 			);
-			name = Pods;
+			name = "Support Files";
+			path = "../Target Support Files/Toaster";
 			sourceTree = "<group>";
 		};
-		5783016B0B3CA5932571E865C1A484C6 /* Support Files */ = {
+		122DA2E5084A4393C29BE363C764795C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A3910C3901482F2E20320BE51A61E91E /* Info.plist */,
-				69AC57842E7B14E7A68A2105F85AD6CB /* Swifter.modulemap */,
-				C99AE4773991ED68557CE021BBF27B51 /* Swifter.xcconfig */,
-				ADEF6F7F606D39D2316E3F8B79D257DB /* Swifter-dummy.m */,
-				305A2C645EF49F2AAE2A30F664005F44 /* Swifter-prefix.pch */,
-				DBFB45BD9FED6E5F2AF1D394CBE71B73 /* Swifter-umbrella.h */,
+				E5E9260013FA223D81B907D9285F6EA1 /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		1E09E14DB9D382A4C3F0DE86B5313E12 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				4DFE2BF9435F526F05CC7B86D8F3453E /* Info.plist */,
+				FB8BA23B0151109F1D54E2EC91F53D59 /* Swifter.modulemap */,
+				00DBFD26D803C8DE3E64BB9D894F37D3 /* Swifter.xcconfig */,
+				389AD343172635039A9F979221E3E16F /* Swifter-dummy.m */,
+				A556C5E416C1BC2C3A2677061B95C9E8 /* Swifter-prefix.pch */,
+				DFE92FDFAB6E0792533286BF53BCA5AC /* Swifter-umbrella.h */,
 			);
 			name = "Support Files";
 			path = "../Target Support Files/Swifter";
 			sourceTree = "<group>";
 		};
-		7531C8F8DE19F1AA3C8A7AC97A91DC29 /* iOS */ = {
+		2B1F770327061DA73AE0CF6D20C13815 /* Swifter */ = {
 			isa = PBXGroup;
 			children = (
-				CBB3DE36805AF21409EC968A9691732F /* Foundation.framework */,
+				F1CA9A234885B1C9F6ECDA380E05215F /* DemoServer.swift */,
+				A0FA23483E5E76271451192236432CB9 /* Errno.swift */,
+				60587212B067EBCCE7CC5A369FDB7227 /* Files.swift */,
+				477BD73C49B7D116B25B0E1E6032BD34 /* HttpParser.swift */,
+				A69840A40FB8B1825602F8CB6B2C7186 /* HttpRequest.swift */,
+				747A6EFF67A70E5C7EAE7EEC21A002BB /* HttpResponse.swift */,
+				38F23437C5F5F86F2FC9D2CE70AA59D9 /* HttpRouter.swift */,
+				432C814DE94CF46C654BF90013797CAE /* HttpServer.swift */,
+				443B63437AC1A9A3D578D8A38AAC209F /* HttpServerIO.swift */,
+				3CF5174189CA5383D13364EFAC57A050 /* Process.swift */,
+				452702833C622C1ADA37BDE103BC7B7C /* Scopes.swift */,
+				76E90393A0B92B6FFBEEA5CED5DEB12A /* Socket.swift */,
+				55219728B347B24D85213B7DC5B1372A /* Socket+File.swift */,
+				A342BA89E2856674FDE3A6D0DA1065EF /* Socket+Server.swift */,
+				E2C7B153D3152E4DA8C8A3C981E853E1 /* String+BASE64.swift */,
+				65E8EB436AC82EC7FE305CFD0109517A /* String+File.swift */,
+				2C374E249C596A0976E673F6DDCD83A8 /* String+Misc.swift */,
+				0D542AAB3D7A4ED07DF85DA200DC194B /* String+SHA1.swift */,
+				DD0EE240CC11BFF0715EE0FE513743AC /* WebSockets.swift */,
+				1E09E14DB9D382A4C3F0DE86B5313E12 /* Support Files */,
 			);
-			name = iOS;
+			name = Swifter;
+			path = Swifter;
+			sourceTree = "<group>";
+		};
+		38E4BD1AE11A797F185A73D22738BE6C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				2B1F770327061DA73AE0CF6D20C13815 /* Swifter */,
+				44898417E9B51CA76D27A0D7D2EFFC4E /* Toaster */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		44898417E9B51CA76D27A0D7D2EFFC4E /* Toaster */ = {
+			isa = PBXGroup;
+			children = (
+				941D010893468297D92C79B3F1060A68 /* Toast.swift */,
+				D88B8A39AF84687252124A74CF8E97F2 /* ToastCenter.swift */,
+				3AAF8661231CA0C3450EBBA776589ACB /* Toaster.h */,
+				94727448FC919402F22E5FA51ED8DF4D /* ToastView.swift */,
+				76453DA9771E742A5E1DB9DB674D4D25 /* ToastWindow.swift */,
+				0BB6E43FA3DF1CEA555EBF481C635B2C /* Support Files */,
+			);
+			name = Toaster;
+			path = Toaster;
+			sourceTree = "<group>";
+		};
+		5AF7D0F78D9E35B54E2DE091EC2D5F25 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2407A702C82BCA8EE4B4A4B992CEF7A9 /* Pods_StraylightLockApp.framework */,
+				5B663436D1B503FC22227BAF6EE808F5 /* Swifter.framework */,
+				C9135BED5945275DAAD00A53B814B662 /* Toaster.framework */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		7DB346D0F39D3F0E887471402A8071AB = {
 			isa = PBXGroup;
 			children = (
 				93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */,
-				BC3CA7F9E30CC8F7E2DD044DD34432FC /* Frameworks */,
-				5496569EFDB2F646E9958296B794B87C /* Pods */,
-				87E68BB809570A655FD9FF77EE2E721D /* Products */,
+				122DA2E5084A4393C29BE363C764795C /* Frameworks */,
+				38E4BD1AE11A797F185A73D22738BE6C /* Pods */,
+				5AF7D0F78D9E35B54E2DE091EC2D5F25 /* Products */,
 				C45174FCFD13A0E0D7A836FA29CA7B0A /* Targets Support Files */,
 			);
-			sourceTree = "<group>";
-		};
-		87E68BB809570A655FD9FF77EE2E721D /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				B6D9D9736AC70996C87A1CEA5AEF7E20 /* Pods_StraylightLockApp.framework */,
-				BA9875FDDE94888E07098EF77FD0FAF5 /* Swifter.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		BC3CA7F9E30CC8F7E2DD044DD34432FC /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				7531C8F8DE19F1AA3C8A7AC97A91DC29 /* iOS */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		C45174FCFD13A0E0D7A836FA29CA7B0A /* Targets Support Files */ = {
@@ -190,63 +281,71 @@
 			path = "Target Support Files/Pods-StraylightLockApp";
 			sourceTree = "<group>";
 		};
-		E317567DD6CFBCC6BD8E2CCC3334E736 /* Swifter */ = {
+		E5E9260013FA223D81B907D9285F6EA1 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				54C04FB8CE574AE23BB9197B8F05017D /* DemoServer.swift */,
-				1A22FE77D157C1B627774F03B067302F /* Errno.swift */,
-				038F170F9CB467BC18410909EBFDDC7B /* Files.swift */,
-				2018E2553AB29E397F56CC79AE7AF5E5 /* HttpParser.swift */,
-				74E3E2964B137572305CD053FAE22F52 /* HttpRequest.swift */,
-				0D32BEF82A32DA8051C83140668A15C0 /* HttpResponse.swift */,
-				1D240E4350B964FCE575C283D30AD4F8 /* HttpRouter.swift */,
-				4F8B9A4FEF954455A863A7A380D698D3 /* HttpServer.swift */,
-				8DB0DE180BD46D7A44E7256D868C724E /* HttpServerIO.swift */,
-				CFCC662A4D7162E21F0C63275856E00D /* Process.swift */,
-				D8B4969B9281E6B53615AC9CBD2693D5 /* Scopes.swift */,
-				1D0A015711BD0B80DF734FD2E3395C4D /* Socket.swift */,
-				4676B34B3B0C536D44D20DB9EBF2D8C5 /* Socket+File.swift */,
-				92A70BBADC8AE78BFA925BC3D6A06EAF /* Socket+Server.swift */,
-				B4038776CCF5C791FEDE4A0D2A044D14 /* String+BASE64.swift */,
-				4AEEBC81D06F241E555C6E16876585F9 /* String+File.swift */,
-				82CA29A0ACF4D17FF93C8183CF2E6068 /* String+Misc.swift */,
-				DA82E21B7A7FAC12248F26F977E0A36E /* String+SHA1.swift */,
-				41F7B33365FCEEFBA48111EBDB758951 /* WebSockets.swift */,
-				5783016B0B3CA5932571E865C1A484C6 /* Support Files */,
+				EC32878090C4B2B93381956161EC0930 /* Foundation.framework */,
+				E0203FCF2E38F9E0B8C4E69853543A3E /* QuartzCore.framework */,
+				5BF675A168132FD52AED630F977FE906 /* UIKit.framework */,
 			);
-			name = Swifter;
-			path = Swifter;
+			name = iOS;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		1D5A8792E36AAC1087BABB0A5DD91B48 /* Headers */ = {
+		086C38001E768CDE3724AAAC358723F9 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3DA127766436418D66BAB4A406B99608 /* Pods-StraylightLockApp-umbrella.h in Headers */,
+				6504E70F00A345C1399AF7A7793E07DD /* Toaster-umbrella.h in Headers */,
+				3CF846B5B8B4A235ACB3502E7709B7E8 /* Toaster.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B73DE7EDACC165F67FCF7411932828E0 /* Headers */ = {
+		93B05C75467F84D0D69C46D7AED7D311 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CBD9A97F993EFFD528B232F449194894 /* Swifter-umbrella.h in Headers */,
+				96FA365523064A9D510156A7B2327A82 /* Swifter-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		97A4ABAEA4BC69B3DC6AB4B6688E3E0A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD4F4F785936BAAD9CC4530B080B3AA5 /* Pods-StraylightLockApp-umbrella.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		118717B3BF4474B4E8CB32152D9ADF0B /* Swifter */ = {
+		0162603E3FD0AEF93EBBD5E4EF268CC4 /* Toaster */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1DF269F227E3DA6211B39E74993578AB /* Build configuration list for PBXNativeTarget "Swifter" */;
+			buildConfigurationList = 7E60015DF3EFC189E977D12580393899 /* Build configuration list for PBXNativeTarget "Toaster" */;
 			buildPhases = (
-				4D26F1DF44BC8B67FBCEF0E8344EC042 /* Sources */,
-				CB0D7E99028A99D463BAE6366BA870A0 /* Frameworks */,
-				B73DE7EDACC165F67FCF7411932828E0 /* Headers */,
+				DCFD8E07BB6017DD387FDAAEA12CBEFA /* Sources */,
+				C0EDD0943F50C523DFF8BD20C07D6E1A /* Frameworks */,
+				086C38001E768CDE3724AAAC358723F9 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Toaster;
+			productName = Toaster;
+			productReference = C9135BED5945275DAAD00A53B814B662 /* Toaster.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		8945BECAE9A6B47F872AD59337C07D17 /* Swifter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7F5726792B315F911436058922CA23F4 /* Build configuration list for PBXNativeTarget "Swifter" */;
+			buildPhases = (
+				1A6C27F720D8EBF16D629AA341CC97E1 /* Sources */,
+				D2FD9D74F928A7C446B1081B02B9CDB4 /* Frameworks */,
+				93B05C75467F84D0D69C46D7AED7D311 /* Headers */,
 			);
 			buildRules = (
 			);
@@ -254,25 +353,26 @@
 			);
 			name = Swifter;
 			productName = Swifter;
-			productReference = BA9875FDDE94888E07098EF77FD0FAF5 /* Swifter.framework */;
+			productReference = 5B663436D1B503FC22227BAF6EE808F5 /* Swifter.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		EC73EF10D8A310AEF877430FED189F12 /* Pods-StraylightLockApp */ = {
+		D754D87BB9791A6EC0E8A592F0869B3D /* Pods-StraylightLockApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A79988D553D66C65D6EF66C41DF15443 /* Build configuration list for PBXNativeTarget "Pods-StraylightLockApp" */;
+			buildConfigurationList = 5FD0ACAB6F7BB6D4510E424CCAD0D284 /* Build configuration list for PBXNativeTarget "Pods-StraylightLockApp" */;
 			buildPhases = (
-				6E44B1EA8179A0D5F14CA9C111873A31 /* Sources */,
-				FC2A1C375E3A37BF6173AABD533C3CB5 /* Frameworks */,
-				1D5A8792E36AAC1087BABB0A5DD91B48 /* Headers */,
+				492C1E8D24EC47A19115FA44ADCCFC2A /* Sources */,
+				0723DEF313118B93D4628AE3DE8DB987 /* Frameworks */,
+				97A4ABAEA4BC69B3DC6AB4B6688E3E0A /* Headers */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				9A6521CE4030EDEBA20DEC9DED1A1CC9 /* PBXTargetDependency */,
+				09DEE2FBF4C3A58A049856CF8FFE74A3 /* PBXTargetDependency */,
+				688C7B03C1AE58D653E61FBED27EEBC6 /* PBXTargetDependency */,
 			);
 			name = "Pods-StraylightLockApp";
 			productName = "Pods-StraylightLockApp";
-			productReference = B6D9D9736AC70996C87A1CEA5AEF7E20 /* Pods_StraylightLockApp.framework */;
+			productReference = 2407A702C82BCA8EE4B4A4B992CEF7A9 /* Pods_StraylightLockApp.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -292,60 +392,79 @@
 				en,
 			);
 			mainGroup = 7DB346D0F39D3F0E887471402A8071AB;
-			productRefGroup = 87E68BB809570A655FD9FF77EE2E721D /* Products */;
+			productRefGroup = 5AF7D0F78D9E35B54E2DE091EC2D5F25 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				EC73EF10D8A310AEF877430FED189F12 /* Pods-StraylightLockApp */,
-				118717B3BF4474B4E8CB32152D9ADF0B /* Swifter */,
+				D754D87BB9791A6EC0E8A592F0869B3D /* Pods-StraylightLockApp */,
+				8945BECAE9A6B47F872AD59337C07D17 /* Swifter */,
+				0162603E3FD0AEF93EBBD5E4EF268CC4 /* Toaster */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		4D26F1DF44BC8B67FBCEF0E8344EC042 /* Sources */ = {
+		1A6C27F720D8EBF16D629AA341CC97E1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A00D99C0032F125B002284DD4CB7F094 /* DemoServer.swift in Sources */,
-				91B1F0F4BA782C4953AB4F31E72D65EC /* Errno.swift in Sources */,
-				DCACE8B7893CA9CE251BCDB387B9BC3F /* Files.swift in Sources */,
-				4C56237B1EB2D176BC08374D26AF35C6 /* HttpParser.swift in Sources */,
-				5271227CCF2F8FDAB7731FA68B1ED83E /* HttpRequest.swift in Sources */,
-				264D563870B01AD7B290B0C88AF58C68 /* HttpResponse.swift in Sources */,
-				5266BD90C7444E3D03B1871ED3D2E667 /* HttpRouter.swift in Sources */,
-				6AA9C5A76D76B0151F1D4EA794447E0C /* HttpServer.swift in Sources */,
-				DE1A25586C48864DAFBEACA765516E4E /* HttpServerIO.swift in Sources */,
-				7410B0D7D40E781843BFDBCDB853F5A8 /* Process.swift in Sources */,
-				2F2E2479E2A0B13A4DE40F720894129F /* Scopes.swift in Sources */,
-				4436E3C8058FE81DCC11932E2D0E5F02 /* Socket+File.swift in Sources */,
-				F98F89643EE8EB316DAC5E0E9AC40C29 /* Socket+Server.swift in Sources */,
-				6ABEDF9ECD952D60F71D3B695005E956 /* Socket.swift in Sources */,
-				2D136634854D8D645BBD2C149104A261 /* String+BASE64.swift in Sources */,
-				2C4FF31E34A4A83B1F3B7FD60CE1C361 /* String+File.swift in Sources */,
-				61D2BCC0AD6375F66A54DDD5C5CDEF73 /* String+Misc.swift in Sources */,
-				6D7974D22AE34FDB5817976CAA972FB8 /* String+SHA1.swift in Sources */,
-				98DD590EE4547C0F82717C176EB21E0B /* Swifter-dummy.m in Sources */,
-				55DBD3CD8028859E1C32E1D7C5E9BD53 /* WebSockets.swift in Sources */,
+				79BF23C1D93CE4841D7624AF34FCB6EC /* DemoServer.swift in Sources */,
+				77105588F44B199B7A95D6355A3C4006 /* Errno.swift in Sources */,
+				54AC6201AFB478FF106791366E111274 /* Files.swift in Sources */,
+				621F5998B066D1D83E124890601771DD /* HttpParser.swift in Sources */,
+				C15B9179914516E37767694B30F35EE9 /* HttpRequest.swift in Sources */,
+				B054332553137F9431310547E595B80E /* HttpResponse.swift in Sources */,
+				95AFA8B1E94E1E7CE499642063FAE75D /* HttpRouter.swift in Sources */,
+				D089836C388AD507D1EAF6F01D13F0E0 /* HttpServer.swift in Sources */,
+				DBD6E2540A6265FFEBFDC619744DD316 /* HttpServerIO.swift in Sources */,
+				B79B4EA17B5526A7D2E056BCAAAFC065 /* Process.swift in Sources */,
+				E1FC9EAFD49C01B57288EB1E5100E2AF /* Scopes.swift in Sources */,
+				D384073A49E607C7D0B9F1F06293C906 /* Socket+File.swift in Sources */,
+				4E17B58E37C3D928F275DC7CB9B156AD /* Socket+Server.swift in Sources */,
+				5A980AB4093F52036B8F3053904AC726 /* Socket.swift in Sources */,
+				B2BDC6C16CE62CD9B648A353FDDCDCAA /* String+BASE64.swift in Sources */,
+				E9F0872B3C358CD4E61689BEF9D59744 /* String+File.swift in Sources */,
+				43A7C3458298C2FA634BB725EEDBACAA /* String+Misc.swift in Sources */,
+				794083C13C1D4F552D03745D8A79B421 /* String+SHA1.swift in Sources */,
+				E338E5B76FA315F868E2E6DB619C71FE /* Swifter-dummy.m in Sources */,
+				75E6088ACAFD3B7C5A5AE5300DE7F747 /* WebSockets.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6E44B1EA8179A0D5F14CA9C111873A31 /* Sources */ = {
+		492C1E8D24EC47A19115FA44ADCCFC2A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0ACD7803EAB0F62CA732EC15194DDF12 /* Pods-StraylightLockApp-dummy.m in Sources */,
+				F9348A4E214780A3ED5F329B34A9D0E2 /* Pods-StraylightLockApp-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DCFD8E07BB6017DD387FDAAEA12CBEFA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F478EA3EB988413F7B52C52DF3175109 /* Toast.swift in Sources */,
+				99C73361A7BC1F1F5619C9A0A856D97A /* ToastCenter.swift in Sources */,
+				30B0C4788E6F00046F81C2B099E5CC98 /* Toaster-dummy.m in Sources */,
+				1516D3124D74615E830FF48128CB1CE3 /* ToastView.swift in Sources */,
+				AB87D0A2294402F689B3AF085AD2731E /* ToastWindow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		9A6521CE4030EDEBA20DEC9DED1A1CC9 /* PBXTargetDependency */ = {
+		09DEE2FBF4C3A58A049856CF8FFE74A3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Swifter;
-			target = 118717B3BF4474B4E8CB32152D9ADF0B /* Swifter */;
-			targetProxy = 07621B34426130B19288D20E161944B0 /* PBXContainerItemProxy */;
+			target = 8945BECAE9A6B47F872AD59337C07D17 /* Swifter */;
+			targetProxy = ED3802941AEE96CF24272EE9243CFD60 /* PBXContainerItemProxy */;
+		};
+		688C7B03C1AE58D653E61FBED27EEBC6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Toaster;
+			target = 0162603E3FD0AEF93EBBD5E4EF268CC4 /* Toaster */;
+			targetProxy = 476873A1150F5CBB1BB95BA94026137A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -394,15 +513,15 @@
 			};
 			name = Debug;
 		};
-		06D5952E9519569BDF99EFC02E0751BD /* Release */ = {
+		0B816A4670547D436B36FA8F4C529C5C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C99AE4773991ED68557CE021BBF27B51 /* Swifter.xcconfig */;
+			baseConfigurationReference = 00DBFD26D803C8DE3E64BB9D894F37D3 /* Swifter.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -415,18 +534,19 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/Swifter/Swifter.modulemap";
-				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = Swifter;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
-			name = Release;
+			name = Debug;
 		};
-		09FD02D246C81FA5F9A258AC9733F952 /* Debug */ = {
+		108576EDF0D6CF4A0D57FD210A69A223 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = EF80AB6FBE1B4F2E2E9C23B25DC02159 /* Pods-StraylightLockApp.debug.xcconfig */;
 			buildSettings = {
@@ -462,7 +582,39 @@
 			};
 			name = Debug;
 		};
-		151FB92B0A33C262FA4F59A8A968C28D /* Release */ = {
+		192E745C83D29FA40536259DBC7565F0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 00DBFD26D803C8DE3E64BB9D894F37D3 /* Swifter.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/Swifter/Swifter-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/Swifter/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = "Target Support Files/Swifter/Swifter.modulemap";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = Swifter;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		2EE4CB85AD144618BF2207BF12D817AB /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 82E429C4CCF173BEEF2F93A81E27CA0D /* Pods-StraylightLockApp.release.xcconfig */;
 			buildSettings = {
@@ -537,9 +689,9 @@
 			};
 			name = Release;
 		};
-		7869757D9FF4A22BBD2292247C9DB3A5 /* Debug */ = {
+		7BC7D8236F377564754FE73689ECB465 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C99AE4773991ED68557CE021BBF27B51 /* Swifter.xcconfig */;
+			baseConfigurationReference = 52CDF791B4D1A6F9AA8D34F2739279EE /* Toaster.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
@@ -552,14 +704,14 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREFIX_HEADER = "Target Support Files/Swifter/Swifter-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/Swifter/Info.plist";
+				GCC_PREFIX_HEADER = "Target Support Files/Toaster/Toaster-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/Toaster/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MODULEMAP_FILE = "Target Support Files/Swifter/Swifter.modulemap";
+				MODULEMAP_FILE = "Target Support Files/Toaster/Toaster.modulemap";
 				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_NAME = Swifter;
+				PRODUCT_NAME = Toaster;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -570,18 +722,41 @@
 			};
 			name = Debug;
 		};
+		D4C009A3F1F81CE9EE67BBB2AB1A62E7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 52CDF791B4D1A6F9AA8D34F2739279EE /* Toaster.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/Toaster/Toaster-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/Toaster/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = "Target Support Files/Toaster/Toaster.modulemap";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = Toaster;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DF269F227E3DA6211B39E74993578AB /* Build configuration list for PBXNativeTarget "Swifter" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				7869757D9FF4A22BBD2292247C9DB3A5 /* Debug */,
-				06D5952E9519569BDF99EFC02E0751BD /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -591,11 +766,29 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A79988D553D66C65D6EF66C41DF15443 /* Build configuration list for PBXNativeTarget "Pods-StraylightLockApp" */ = {
+		5FD0ACAB6F7BB6D4510E424CCAD0D284 /* Build configuration list for PBXNativeTarget "Pods-StraylightLockApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				09FD02D246C81FA5F9A258AC9733F952 /* Debug */,
-				151FB92B0A33C262FA4F59A8A968C28D /* Release */,
+				108576EDF0D6CF4A0D57FD210A69A223 /* Debug */,
+				2EE4CB85AD144618BF2207BF12D817AB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7E60015DF3EFC189E977D12580393899 /* Build configuration list for PBXNativeTarget "Toaster" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7BC7D8236F377564754FE73689ECB465 /* Debug */,
+				D4C009A3F1F81CE9EE67BBB2AB1A62E7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7F5726792B315F911436058922CA23F4 /* Build configuration list for PBXNativeTarget "Swifter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0B816A4670547D436B36FA8F4C529C5C /* Debug */,
+				192E745C83D29FA40536259DBC7565F0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

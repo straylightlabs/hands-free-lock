@@ -3,5 +3,6 @@ use_frameworks!
 
 target 'StraylightLockApp' do
   pod 'Swifter'
+  pod 'Toaster'
 end
 
