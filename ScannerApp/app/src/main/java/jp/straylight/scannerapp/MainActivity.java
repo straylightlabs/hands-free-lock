@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
             handleBleScanException((BleScanException) throwable);
         }
     }
-
+ 
     private void handleBleScanException(BleScanException bleScanException) {
         switch (bleScanException.getReason()) {
             case BleScanException.BLUETOOTH_NOT_AVAILABLE:
