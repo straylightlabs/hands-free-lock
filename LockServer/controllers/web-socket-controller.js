@@ -42,14 +42,14 @@ var unlock = throttle(2000, function() {
 });
 
 exports.onMessage = function(message) {
-  var data = JSON.parse(message);
   console.info('RECEIVED: ' + message);
-  if (message.type == 'nfc') {
-    authorizeNfc(message.url);
-  } else if (message.type == 'ble') {
-    authorizeBle(message.macAddress, message.rssi);
+  var data = JSON.parse(message);
+  if (data.type == 'nfc') {
+    authorizeNfc(data.url);
+  } else if (data.type == 'ble') {
+    authorizeBle(data.macAddress, data.rssi);
   } else {
-    console.error('Unknown message type: ' + message.type);
+    console.error('Unknown message type: ' + data.type);
   }
 }
 
