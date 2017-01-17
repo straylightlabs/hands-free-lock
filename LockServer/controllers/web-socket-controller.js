@@ -37,7 +37,7 @@ function throttle(seconds, callback) {
   };
 }
 
-var unlock = throttle(2000, function() {
+var unlock = throttle(10000, function() {
   send('unlock');
 });
 
