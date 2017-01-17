@@ -1,10 +1,21 @@
 const http = require('http');
 
-var lastDetectionTimeMap = {};
+var urlWhitelist = new Set([
+    'https://straylight.jp/one/00001',
+    'https://straylight.jp/one/00002',
+    'https://straylight.jp/one/vk2g7',
+    'https://straylight.jp/one/b4cz6',
+    'https://straylight.jp/one/6ej7n',
+    'https://straylight.jp/one/u36bx',
+    'https://straylight.jp/one/9y2tk',
+    'https://straylight.jp/one/33fxm',
+    'https://straylight.jp/one/ujv3w',
+    'https://straylight.jp/one/zz6n7',
+]);
 var macAddressWhitelist = new Set([
-    'CD:A5:D3:FA:A1:02',  // BLE Nano (broken?)
-    'EF:B0:DA:45:8E:B8',  // TrackR
-    'FD:81:9A:14:4E:ED',  // Ryo's Tile`
+    'F0:2A;63:5C;E3:E5',  // SLBeacon00001
+    'EB:B4:73:21:AC:3C',  // SLBeacon00002
+    'D7:AF:DA:DF:43:85',  // SLBeacon00003
 ]);
 
 function send(action) {
@@ -26,55 +37,31 @@ function throttle(seconds, callback) {
   };
 }
 
-var getStatus = throttle(3000, function() {
-  send('status');
-});
-
-var lock = throttle(10000, function() {
-  send('lock');
-});
-
-var unlock = throttle(10000, function() {
+var unlock = throttle(2000, function() {
   send('unlock');
 });
 
 exports.onMessage = function(message) {
   var data = JSON.parse(message);
-  if (!macAddressWhitelist.has(data.macAddress)) {
-    return;
-  }
   console.info('RECEIVED: ' + message);
-  var keepLoggedIn = false;
-  if (lastDetectionTimeMap[data.macAddress] === undefined) {
-    if (data.rssi > -80) {
-      console.info('DETECTED: ' + data.macAddress);
-      unlock();
-      keepLoggedIn = true;
-    } else {
-      getStatus();
-    }
+  if (message.type == 'nfc') {
+    authorizeNfc(message.url);
+  } else if (message.type == 'ble') {
+    authorizeBle(message.macAddress, message.rssi);
   } else {
-    keepLoggedIn = true;
-  }
-  if (keepLoggedIn) {
-    lastDetectionTimeMap[data.macAddress] = new Date();
+    console.error('Unknown message type: ' + message.type);
   }
 }
 
-exports.checkLogOut = function() {
-  var newMap = {};
-  var detected = false;
-  for (var key in lastDetectionTimeMap) {
-    if (new Date().getTime() < lastDetectionTimeMap[key].getTime() + 60000) {
-      newMap[key] = lastDetectionTimeMap[key];
-      detected = true;
-    } else {
-      console.info('LOST: ' + key);
-    }
+function authorizeNfc(url) {
+  if (urlWhitelist.has(url)) {
+    unlock();
   }
-  lastDetectionTimeMap = newMap;
-  if (!detected) {
-    lock();
+}
+
+function authorizeBle(macAddress, rssi) {
+  if (macAddressWhitelist.has(macAddress) && rssi > -90) {
+    unlock();
   }
 }
 
