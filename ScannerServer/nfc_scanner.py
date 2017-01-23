@@ -5,6 +5,19 @@ import time
 
 from pirc522 import RFID
 
+WHITELIST = [
+    'https://straylight.jp/one/00001',
+    'https://straylight.jp/one/00002',
+    'https://straylight.jp/one/vk2g7',
+    'https://straylight.jp/one/b4cz6',
+    'https://straylight.jp/one/6ej7n',
+    'https://straylight.jp/one/u36bx',
+    'https://straylight.jp/one/9y2tk',
+    'https://straylight.jp/one/33fxm',
+    'https://straylight.jp/one/ujv3w',
+    'https://straylight.jp/one/zz6n7',
+]
+
 loop = True
 rfid = RFID()
 util = rfid.util()
@@ -16,8 +29,6 @@ def end_read(signal, frame):
     rfid.cleanup()
 
 signal.signal(signal.SIGINT, end_read)
-
-print("Scanning...")
 
 while loop:
     (not_found, data) = rfid.request()
@@ -50,7 +61,9 @@ while loop:
 		break
 	    chars.append(chr(c))
 	if done_reading:
-	    print(''.join(chars))
+	    address = ''.join(chars)
+            if address in WHITELIST:
+                print('NFC', address)
 	    break
 
     time.sleep(5)
