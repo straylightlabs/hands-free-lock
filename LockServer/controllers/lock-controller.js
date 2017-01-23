@@ -54,7 +54,7 @@ function authorizeBle(macAddress, rssi) {
 }
 
 function authorize(data) {
-  console.info('RECEIVED: ' + data);
+  console.info('RECEIVED: ' + JSON.stringify(data));
   if (data.type == 'nfc') {
     authorizeNfc(data.url);
   } else if (data.type == 'ble') {
