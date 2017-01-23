@@ -40,10 +40,13 @@ while loop:
 	    if num_chars_to_skip > 0:
 		num_chars_to_skip -= 1
 		continue
-	    chars.append(chr(c))
+            if c >= 200:
+                # TODO(ryok): Investigate why 254 comes at the end of URL
+                continue
 	    if c == 0:
 		done_reading = True
 		break
+	    chars.append(chr(c))
 	if done_reading:
 	    print(''.join(chars))
 	    break
