@@ -33,7 +33,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    private static final String REPORT_URL = "ws://192.168.0.5:8080";
+    private static final String REPORT_URL = "ws://192.168.0.5:8080/report";
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_ENABLE_LOCATION = 2;
 
