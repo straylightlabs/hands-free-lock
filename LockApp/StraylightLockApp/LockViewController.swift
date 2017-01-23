@@ -10,37 +10,39 @@ import UIKit
 import HomeKit
 import Toaster
 
-class LockViewController: UIViewController, HMHomeManagerDelegate, HMAccessoryDelegate {
+class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManagerDelegate, HMAccessoryDelegate {
 
-    @IBOutlet weak var lockButton: UIButton!
-
-    var isLocked = false
-
-    private let homeManager = HMHomeManager()
-    private var targetLockState: HMCharacteristic?
-    private var immutableUntil = Date(timeIntervalSince1970: 0)
-    private var waitToLockTimer: Timer?
-    private var isUpdatingLockState = false {
+    var isLocked = false {
         didSet {
-            if isUpdatingLockState {
-                UIView.animate(withDuration: 0.6) {
-                    self.lockButton.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
-                }
-            } else {
-                self.lockButton.transform = CGAffineTransform.identity
-            }
+            self.updateLockButtonImages()
         }
     }
 
-    private var server: LockHttpServer?
+    @IBOutlet weak var lockButton: UIButton!
+    @IBOutlet weak var delayLockButton: UIButton!
+
+    private var server = LockHttpServer()
+    private let homeManager = HMHomeManager()
+    private var targetLockState: HMCharacteristic?
+    private var countDownTimer: Timer?
+    private var countDownSec = COUNT_DOWN_TOTAL_SEC
+    private var isUpdatingLockState = false {
+        didSet {
+            self.updateLockButtonImages()
+        }
+    }
+
+    private static let REPORT_URL = URL(string: "http://192.168.0.5:8080/report")!
+    private static let COUNT_DOWN_TOTAL_SEC = 20
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.server.delegate = self
         self.homeManager.delegate = self
-        self.lockButton.addTarget(self, action: #selector(didTouchLockButton), for: .touchDown)
 
-        self.server = LockHttpServer(lockVC: self)
+        self.lockButton.addTarget(self, action: #selector(didTouchLockButton), for: .touchDown)
+        self.delayLockButton.addTarget(self, action: #selector(didTouchDelayLockButton), for: .touchDown)
     }
 
     override func didReceiveMemoryWarning() {
@@ -65,7 +67,7 @@ class LockViewController: UIViewController, HMHomeManagerDelegate, HMAccessoryDe
                         } else if characteristic.characteristicType == HMCharacteristicTypeCurrentLockMechanismState {
                             characteristic.readValue { error in
                                 if error == nil {
-                                    self.updateStateWith(characteristic)
+                                    self.didUpdateStateWith(characteristic)
                                 } else {
                                     print("ERROR: Failed to read the lock state.")
                                 }
@@ -81,49 +83,58 @@ class LockViewController: UIViewController, HMHomeManagerDelegate, HMAccessoryDe
         print("INFO: The lock became \(accessory.isReachable ? "reachable" : "not reachable").")
 
         if accessory.isReachable {
-            self.updateLockButtonImage()
+            self.updateLockButtonImages()
         } else {
             lockButton.setImage(#imageLiteral(resourceName: "DisconnectedButton"), for: .normal)
+            delayLockButton.isHidden = true
         }
     }
 
     func accessory(_ accessory: HMAccessory, service: HMService, didUpdateValueFor characteristic: HMCharacteristic) {
         if characteristic.characteristicType == HMCharacteristicTypeCurrentLockMechanismState {
-            self.updateStateWith(characteristic)
+            self.didUpdateStateWith(characteristic)
         }
     }
 
     func didTouchLockButton(sender: UIButton) {
-        if !self.isLocked {
-            if self.waitToLockTimer == nil {
-                self.waitToLockTimer = Timer.scheduledTimer(timeInterval: 20.0, target: self, selector: #selector(didWaitToLock), userInfo: nil, repeats: false)
-                self.lockButton.transform = CGAffineTransform.identity
-                UIView.animate(withDuration: 0.6, delay: 0.0, options: [.repeat, .curveEaseOut, .autoreverse], animations: {
-                    self.lockButton.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
-                }, completion: nil)
-            }
-        } else {
-            self.updateLockState(false)
-        }
+        self.updateLockState(!self.isLocked)
     }
 
-    func didWaitToLock() {
-        self.updateLockState(true)
-        self.immutableUntil = Date(timeIntervalSinceNow: 60.0)
-        self.waitToLockTimer = nil
+    func didTouchDelayLockButton(sender: UIButton) {
+        precondition(!self.isLocked)
+
+        self.countDownTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(countDownToLock), userInfo: nil, repeats: true)
+        self.updateLockButtonImages()
+    }
+
+    func countDownToLock() {
+        precondition(self.countDownTimer != nil)
+
+        self.countDownSec -= 1
+        self.updateLockButtonImages()
+
+        if (self.countDownSec <= 0) {
+            self.updateLockState(true)
+            self.countDownTimer?.invalidate()
+            self.countDownTimer = nil
+            self.countDownSec = LockViewController.COUNT_DOWN_TOTAL_SEC
+        }
     }
 
     func updateLockState(_ shouldLock: Bool) {
-        if self.isUpdatingLockState || self.isLocked == shouldLock {
+        if self.isUpdatingLockState {
+            print("The lock is being updated.")
             return
         }
-        if self.immutableUntil.timeIntervalSinceNow >= 0 {
-            Toast(text: "The lock still in immutable state").show()
+        if self.isLocked == shouldLock {
+            print("No need to update the lock state.")
             return
         }
 
         self.isUpdatingLockState = true
         print("INFO: Updating the lock state: \(shouldLock ? "LOCKED" : "UNLOCKED").")
+
+        reportLockAction(shouldLock)
 
         if let state = self.targetLockState {
             state.writeValue(shouldLock ? 1 : 0) { error in
@@ -136,16 +147,53 @@ class LockViewController: UIViewController, HMHomeManagerDelegate, HMAccessoryDe
         }
     }
 
-    private func updateStateWith(_ characteristic: HMCharacteristic) {
+    private func didUpdateStateWith(_ characteristic: HMCharacteristic) {
         self.isLocked = characteristic.value as? Int == 1
         self.isUpdatingLockState = false
-        self.updateLockButtonImage()
+        self.updateLockButtonImages()
 
         print("INFO: Lock state updated: \(self.isLocked ? "LOCKED" : "UNLOCKED").")
     }
 
-    private func updateLockButtonImage() {
-        lockButton.setImage(self.isLocked ? #imageLiteral(resourceName: "LockButton") : #imageLiteral(resourceName: "UnlockButton"), for: .normal)
+    private func updateLockButtonImages() {
+        self.lockButton.setImage(self.isLocked ? #imageLiteral(resourceName: "LockButton") : #imageLiteral(resourceName: "UnlockButton"), for: .normal)
+
+        self.delayLockButton.setTitle("Lock after \(self.countDownSec) seconds", for: .normal)
+        self.delayLockButton.isHidden = self.isLocked || self.isUpdatingLockState
+        self.delayLockButton.isEnabled = self.countDownTimer == nil
+
+        if isUpdatingLockState {
+            UIView.animate(withDuration: 0.6) {
+                self.lockButton.transform = CGAffineTransform(scaleX: 0.001, y: 0.001)
+            }
+        } else if self.countDownTimer != nil {
+            UIView.animate(withDuration: 0.5, delay: 0.0, options: [.repeat, .curveEaseOut, .autoreverse], animations: {
+                self.lockButton.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+            }, completion: nil)
+        } else {
+            self.lockButton.transform = CGAffineTransform.identity
+        }
+    }
+
+    private func reportLockAction(_ shouldLock: Bool) {
+        var request = URLRequest(url: LockViewController.REPORT_URL)
+        request.httpMethod = "POST"
+        request.httpBody = try! JSONSerialization.data(withJSONObject: ["type": "manualLock", "locked": shouldLock])
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                print("ERROR: Failed to post: \(error)")
+                return
+            }
+            if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
+                print("ERROR: statusCode=\(httpStatus.statusCode)")
+            }
+            let responseString = String(data: data, encoding: .utf8)
+            if responseString != "OK" {
+                print("ERROR: Unexpected response: \(responseString)")
+            }
+        }
+        task.resume()
     }
 
 }
