@@ -17,9 +17,8 @@ signal.signal(signal.SIGINT, end_read)
 print("Scanning...")
 
 while loop:
-    (error, data) = rfid.request()
-    if error:
-        print(error)
+    (not_found, data) = rfid.request()
+    if not_found:
         continue
 
     (error, uid) = rfid.anticoll()
@@ -28,7 +27,7 @@ while loop:
         continue
 
     rfid.select_tag(uid)
-    data = rfid.read(4)[-4:]
+    data = list(rfid.read(4)[-4:])
     done_reading = False
     for i in xrange(2, 16):
         for c in rfid.read(i * 4):
@@ -40,5 +39,5 @@ while loop:
             break
         
     print(''.join([chr(c) for c in data]))
-    time.sleep(1)
+    time.sleep(5)
 
