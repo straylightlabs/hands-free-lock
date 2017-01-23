@@ -14,7 +14,7 @@ var urlWhitelist = new Set([
 ]);
 var macAddressWhitelist = new Set([
     'F0:2A;63:5C;E3:E5',  // SLBeacon00001
-    'EB:B4:73:21:AC:3C',  // SLBeacon00002
+    'EB:B4:73:21:AC:3C',  // SLBeacon00002 -> Daniel
     'D7:AF:DA:DF:43:85',  // SLBeacon00003
 ]);
 
@@ -41,18 +41,6 @@ var unlock = throttle(10000, function() {
   send('unlock');
 });
 
-exports.onMessage = function(message) {
-  console.info('RECEIVED: ' + message);
-  var data = JSON.parse(message);
-  if (data.type == 'nfc') {
-    authorizeNfc(data.url);
-  } else if (data.type == 'ble') {
-    authorizeBle(data.macAddress, data.rssi);
-  } else {
-    console.error('Unknown message type: ' + data.type);
-  }
-}
-
 function authorizeNfc(url) {
   if (urlWhitelist.has(url)) {
     unlock();
@@ -63,5 +51,26 @@ function authorizeBle(macAddress, rssi) {
   if (macAddressWhitelist.has(macAddress) && rssi > -90) {
     unlock();
   }
+}
+
+function authorize(data) {
+  console.info('RECEIVED: ' + data);
+  if (data.type == 'nfc') {
+    authorizeNfc(data.url);
+  } else if (data.type == 'ble') {
+    authorizeBle(data.macAddress, data.rssi);
+  } else {
+    console.error('Unknown message type: ' + data.type);
+  }
+}
+
+exports.post = function(req, res) {
+  authorize(req.body);
+  res.send('OK');
+}
+
+exports.socket = function(message) {
+  var data = JSON.parse(message);
+  authorize(data);
 }
 
