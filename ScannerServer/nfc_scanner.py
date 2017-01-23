@@ -5,6 +5,7 @@ from pirc522 import RFID
 
 loop = True
 rfid = RFID()
+util = rfid.util()
 
 def end_read(signal, frame):
     global loop
@@ -19,25 +20,33 @@ print("Scanning...")
 while loop:
     (not_found, data) = rfid.request()
     if not_found:
-        continue
+	continue
 
     (error, uid) = rfid.anticoll()
     if error:
-        print(error)
-        continue
+	continue
 
-    rfid.select_tag(uid)
-    data = list(rfid.read(4)[-4:])
+    util.set_tag(uid)
+
+    chars = []
+    num_chars_to_skip = 28
     done_reading = False
-    for i in xrange(2, 16):
-        for c in rfid.read(i * 4):
-            if c == 0:
-                done_reading = True
-                break
-            data.append(c)
-        if done_reading:
-            break
-        
-    print(''.join([chr(c) for c in data]))
+
+    for i in xrange(16):
+	(error, data) = rfid.read(i * 4)
+	if error:
+	    break
+	for c in data:
+	    if num_chars_to_skip > 0:
+		num_chars_to_skip -= 1
+		continue
+	    chars.append(chr(c))
+	    if c == 0:
+		done_reading = True
+		break
+	if done_reading:
+	    print(''.join(chars))
+	    break
+
     time.sleep(5)
 
