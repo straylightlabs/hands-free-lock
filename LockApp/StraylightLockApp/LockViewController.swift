@@ -20,11 +20,13 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
 
     @IBOutlet weak var lockButton: UIButton!
     @IBOutlet weak var delayLockButton: UIButton!
+    @IBOutlet weak var keepConnectionSwitch: UISwitch!
 
     private var server = LockHttpServer()
     private let homeManager = HMHomeManager()
     private var targetLockState: HMCharacteristic?
     private var countDownTimer: Timer?
+    private var keepConnectionTimer: Timer?
     private var countDownSec = COUNT_DOWN_TOTAL_SEC
     private var isUpdatingLockState = false {
         didSet {
@@ -43,6 +45,7 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
 
         self.lockButton.addTarget(self, action: #selector(didTouchLockButton), for: .touchDown)
         self.delayLockButton.addTarget(self, action: #selector(didTouchDelayLockButton), for: .touchDown)
+        self.keepConnectionSwitch.addTarget(self, action: #selector(didTouchKeepConnectionSwitch), for: .valueChanged)
     }
 
     override func didReceiveMemoryWarning() {
@@ -107,6 +110,15 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
         self.updateLockButtonImages()
     }
 
+    func didTouchKeepConnectionSwitch(sender: UISwitch) {
+        self.keepConnectionSwitch.isOn = !self.keepConnectionSwitch.isOn
+        if self.keepConnectionSwitch.isOn {
+            self.keepConnectionTimer = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(connectToTargetState), userInfo: nil, repeats: true)
+        } else {
+            self.keepConnectionTimer?.invalidate()
+        }
+    }
+
     func countDownToLock() {
         precondition(self.countDownTimer != nil)
 
@@ -144,6 +156,14 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
             }
         } else {
             print("ERROR: Lock not found.")
+        }
+    }
+
+    func connectToTargetState() {
+        self.targetLockState?.readValue { error in
+            if error != nil {
+                print("ERROR: Failed to read the lock state.")
+            }
         }
     }
 
