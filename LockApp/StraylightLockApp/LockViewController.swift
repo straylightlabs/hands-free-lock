@@ -143,6 +143,9 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
             return
         }
 
+        self.keepConnectionTimer?.invalidate()
+        self.keepConnectionSwitch.isOn = false
+
         self.isUpdatingLockState = true
         print("INFO: Updating the lock state: \(shouldLock ? "LOCKED" : "UNLOCKED").")
 
