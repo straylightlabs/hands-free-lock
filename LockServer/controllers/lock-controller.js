@@ -13,7 +13,7 @@ var urlWhitelist = new Set([
     'https://straylight.jp/one/zz6n7',
 ]);
 var macAddressWhitelist = new Set([
-    'F0:2A;63:5C;E3:E5',  // SLBeacon00001
+    'F0:2A:63:5C:E3:E5',  // SLBeacon00001
     'EB:B4:73:21:AC:3C',  // SLBeacon00002 -> Daniel
     'D7:AF:DA:DF:43:85',  // SLBeacon00003
 ]);
@@ -48,13 +48,13 @@ function authorizeNfc(url) {
 }
 
 function authorizeBle(macAddress, rssi) {
-  if (macAddressWhitelist.has(macAddress) && rssi > -90) {
+  if (macAddressWhitelist.has(macAddress)) {
     unlock();
   }
 }
 
 function authorize(data) {
-  console.info('RECEIVED: ' + data);
+  console.info('RECEIVED: ' + JSON.stringify(data));
   if (data.type == 'nfc') {
     authorizeNfc(data.url);
   } else if (data.type == 'ble') {
