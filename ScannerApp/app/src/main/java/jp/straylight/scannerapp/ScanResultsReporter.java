@@ -90,30 +90,32 @@ class ScanResultsReporter {
         webSocketClient = new WebSocketClient(uri) {
             @Override
             public void onOpen(ServerHandshake serverHandshake) {
-                Log.i(TAG, "onOpen");
+                logInfo("WebSocket opened");
             }
 
             @Override
             public void onMessage(String s) {
-                Log.i(TAG, "onMessage:" + s);
+                logInfo("WebSocket message: " + s);
             }
 
             @Override
             public void onClose(int i, String s, boolean b) {
-                Log.i(TAG, "onClose:" + s);
+                logInfo("WebSocket closed");
             }
 
             @Override
             public void onError(Exception e) {
-                Log.i(TAG, "onError:" + e.getMessage());
+                logError("WebSocket error: " + e.getMessage());
             }
         };
+        logInfo("Opening WebSocket");
         webSocketClient.connect();
         isConnecting = true;
     }
 
     public void disconnect() {
         if (webSocketClient != null) {
+            logInfo("Closing WebSocket");
             webSocketClient.close();
         }
         isConnecting = false;
@@ -142,8 +144,7 @@ class ScanResultsReporter {
 
     private void report(String data) {
         if (!isConnected()) {
-            Log.e(TAG, "WebSocket is not open.");
-            listener.onReport("ERROR: WebSocket is not open");
+            logError("WebSocket is not open.");
             return;
         }
 
@@ -154,7 +155,7 @@ class ScanResultsReporter {
     private void reportDisappearance() {
         for (Map.Entry<String, RssiRange> rssiRange : rssiRangeMap.entrySet()) {
             if (rssiRange.getValue().shouldReportDisappearance()) {
-                reportBleScanInternal(-1 /* RSSI */, rssiRange.getKey());
+                reportBleScanInternal(256 /* RSSI */, rssiRange.getKey());
             }
         }
     }
@@ -179,5 +180,15 @@ class ScanResultsReporter {
                 handler.post(r);
             }
         }, interval, interval);
+    }
+
+    private void logError(String message) {
+        Log.e(TAG, message);
+        listener.onReport("ERROR: " + message);
+    }
+
+    private void logInfo(String message) {
+        Log.i(TAG, message);
+        listener.onReport(message);
     }
 }
