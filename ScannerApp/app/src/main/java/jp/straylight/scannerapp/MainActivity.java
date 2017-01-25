@@ -19,11 +19,13 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.util.Pair;
 import android.view.WindowManager;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -34,7 +36,8 @@ public class MainActivity extends Activity implements ScanResultsReporter.Listen
     private static final String TAG = "MainActivity";
     private static final String REPORT_URL = "ws://192.168.0.5:8080/report";
     private static final int REQUEST_ENABLE_BT = 1;
-    private static final int REQUEST_ENABLE_LOCATION = 2;
+    private static final int REQUEST_LOCATION_PERMISSION = 2;
+    private static final int REQUEST_CAMERA_PERMISSION = 3;
 
     @BindView(R.id.log_text_view)
     TextView logTextView;
@@ -77,11 +80,14 @@ public class MainActivity extends Activity implements ScanResultsReporter.Listen
     protected void onResume() {
         super.onResume();
 
-        String permission = Manifest.permission.ACCESS_COARSE_LOCATION;
-        if (ContextCompat.checkSelfPermission(MainActivity.this, permission) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{permission}, REQUEST_ENABLE_LOCATION);
+        List<Pair<String, Integer>> permissions = Arrays.asList(
+                Pair.create(Manifest.permission.ACCESS_COARSE_LOCATION, REQUEST_LOCATION_PERMISSION),
+                Pair.create(Manifest.permission.CAMERA, REQUEST_CAMERA_PERMISSION));
+        for (Pair<String, Integer> permission : permissions) {
+            if (ContextCompat.checkSelfPermission(MainActivity.this, permission.first) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{permission.first}, permission.second);
+            }
         }
-
         if (!bluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
@@ -127,13 +133,11 @@ public class MainActivity extends Activity implements ScanResultsReporter.Listen
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_ENABLE_LOCATION) {
-            for (int i = 0; i < permissions.length; i++) {
-                if (permissions[i] == Manifest.permission.ACCESS_COARSE_LOCATION
-                        && grantResults[i] == PackageManager.PERMISSION_DENIED) {
-                    finish();
-                    return;
-                }
+        if (requestCode == REQUEST_LOCATION_PERMISSION || requestCode == REQUEST_CAMERA_PERMISSION) {
+            if (grantResults.length != 1 || grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                Log.e(TAG, "Did not get required permission: " + requestCode);
+                finish();
+                return;
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
