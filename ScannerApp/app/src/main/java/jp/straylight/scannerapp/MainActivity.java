@@ -174,7 +174,7 @@ public class MainActivity extends Activity implements ScanResultsReporter.Listen
     }
 
     private void addLog(String log) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd HH:mm:ss");
         String dateString = dateFormat.format(new Date());
 
         CharSequence pastLogs = logTextView.getText();
@@ -183,6 +183,6 @@ public class MainActivity extends Activity implements ScanResultsReporter.Listen
             pastLogs = pastLogs.subSequence(0, MAX_LENGTH);
         }
 
-        logTextView.setText(String.format("[%s]\n%s\n%s", dateString, log, pastLogs));
+        logTextView.setText(String.format("[%s] %s\n%s", dateString, log, pastLogs));
     }
 }

@@ -133,12 +133,12 @@ class ScanResultsReporter {
     }
 
     public void reportNfcScan(String url) {
-        String data = String.format("{\"type\":\"nfc\",\"url\":\"%s\"}", url);
+        String data = String.format("{\"type\": \"nfc\", \"url\": \"%s\"}", url);
         report(data);
     }
 
     private void reportBleScanInternal(int rssi, String macAddress) {
-        String data = String.format("{\"type\":\"ble\",\"rssi\":%d,\"macAddress\":\"%s\"}", rssi, macAddress);
+        String data = String.format("{\"type\": \"ble\", \"rssi\": %d, \"macAddress\": \"%s\"}", rssi, macAddress);
         report(data);
     }
 
@@ -155,7 +155,7 @@ class ScanResultsReporter {
     private void reportDisappearance() {
         for (Map.Entry<String, RssiRange> rssiRange : rssiRangeMap.entrySet()) {
             if (rssiRange.getValue().shouldReportDisappearance()) {
-                reportBleScanInternal(256 /* RSSI */, rssiRange.getKey());
+                reportBleScanInternal(255 /* RSSI */, rssiRange.getKey());
             }
         }
     }
