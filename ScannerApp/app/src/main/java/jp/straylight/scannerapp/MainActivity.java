@@ -144,8 +144,13 @@ public class MainActivity extends Activity implements ScanResultsReporter.Listen
     }
 
     @Override
-    public void onReport(String report) {
-        addLog(report);
+    public void onReport(final String report) {
+        MainActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                addLog(report);
+            }
+        });
     }
 
     private ScanCallback scanCallback = new ScanCallback() {
