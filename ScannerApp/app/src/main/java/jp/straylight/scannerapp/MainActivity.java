@@ -18,37 +18,40 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity implements ScanResultsReporter.Listener {
     private static final String TAG = "MainActivity";
     private static final String REPORT_URL = "ws://192.168.0.5:8080/report";
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_ENABLE_LOCATION = 2;
 
-    @BindView(R.id.scan_results)
-    RecyclerView recyclerView;
+    @BindView(R.id.log_text_view)
+    TextView logTextView;
 
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothLeScanner bluetoothScanner;
     private NfcAdapter nfcAdapter;
-    private ScanResultsAdapter resultsAdapter;
     private ScanResultsReporter resultsReporter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().getDecorView().setSystemUiVisibility(0x10);
+
+        setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Log.e(TAG, "FEATURE_BLUETOOTH_LE is not supported.");
@@ -63,20 +66,11 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
         bluetoothScanner = bluetoothAdapter.getBluetoothLeScanner();
-
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-
-        resultsReporter = new ScanResultsReporter(REPORT_URL);
-
-        configureResultList();
+        resultsReporter = new ScanResultsReporter(REPORT_URL, this);
     }
 
     @Override
@@ -110,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
     public void onPause() {
         bluetoothScanner.stopScan(scanCallback);
         nfcAdapter.disableForegroundDispatch(this);
-        resultsAdapter.clearScanResults();
 
         super.onPause();
     }
@@ -118,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onNewIntent(Intent intent) {
         String url = intent.getDataString();
-        resultsReporter.sendNfcScan(url);
+        resultsReporter.reportNfcScan(url);
     }
 
     @Override
@@ -146,6 +139,11 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+    @Override
+    public void onReport(String report) {
+        addLog(report);
+    }
+
     private ScanCallback scanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
@@ -162,35 +160,25 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void configureResultList() {
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager recyclerLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(recyclerLayoutManager);
-        resultsAdapter = new ScanResultsAdapter();
-        recyclerView.setAdapter(resultsAdapter);
-        resultsAdapter.setOnAdapterItemClickListener(new ScanResultsAdapter.OnAdapterItemClickListener() {
-            @Override
-            public void onAdapterViewClick(View view) {
-                final int childAdapterPosition = recyclerView.getChildAdapterPosition(view);
-                final ScanResult itemAtPosition = resultsAdapter.getItemAtPosition(childAdapterPosition);
-                onAdapterItemClick(itemAtPosition);
-            }
-        });
-    }
-
-    private void onAdapterItemClick(ScanResult result) {
-        final String macAddress = result.getDevice().getAddress();
-        Log.i(TAG, "onAdapterItemClick:" + macAddress);
-    }
-
     private void processScanResult(ScanResult result) {
         if (result.getDevice().getName() == null
                 || !result.getDevice().getName().startsWith("SLBeacon")) {
             return;
         }
         String macAddress = result.getDevice().getAddress();
-        int rssi = result.getRssi();
-        resultsReporter.sendBleScan(rssi, macAddress);
-        resultsAdapter.addScanResult(result);
+        resultsReporter.reportBleScan(result.getRssi(), macAddress);
+    }
+
+    private void addLog(String log) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        String dateString = dateFormat.format(new Date());
+
+        CharSequence pastLogs = logTextView.getText();
+        final int MAX_LENGTH = 10000;
+        if (pastLogs.length() > MAX_LENGTH) {
+            pastLogs = pastLogs.subSequence(0, MAX_LENGTH);
+        }
+
+        logTextView.setText(String.format("[%s]\n%s\n%s", dateString, log, pastLogs));
     }
 }

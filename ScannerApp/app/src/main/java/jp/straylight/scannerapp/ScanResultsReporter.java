@@ -16,9 +16,15 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 class ScanResultsReporter {
+
+    public interface Listener {
+        void onReport(String report);
+    }
+
     private static final String TAG = "ScanResultsReporter";
     private static double SECONDS_UNTIL_DISSAPPEARANCE = 10.0;
 
+    private Listener listener;
     private WebSocketClient webSocketClient;
     private URI uri;
     private boolean isConnecting = false;
@@ -58,7 +64,9 @@ class ScanResultsReporter {
         }
     }
 
-    public ScanResultsReporter(String url) {
+    public ScanResultsReporter(String url, Listener listener) {
+        this.listener = listener;
+
         try {
             uri = new URI(url);
         } catch (URISyntaxException e) {
@@ -135,10 +143,12 @@ class ScanResultsReporter {
     private void report(String data) {
         if (!isConnected()) {
             Log.e(TAG, "WebSocket is not open.");
+            listener.onReport("ERROR: WebSocket is not open");
             return;
         }
 
         webSocketClient.send(data);
+        listener.onReport(data);
     }
 
     private void reportDisappearance() {
