@@ -28,6 +28,7 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
     private var countDownTimer: Timer?
     private var keepConnectionTimer: Timer?
     private var countDownSec = COUNT_DOWN_TOTAL_SEC
+    private var isReachable = true
     private var isUpdatingLockState = false {
         didSet {
             self.updateLockButtonImages()
@@ -84,6 +85,9 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
 
     func accessoryDidUpdateReachability(_ accessory: HMAccessory) {
         print("INFO: The lock became \(accessory.isReachable ? "reachable" : "not reachable").")
+
+        self.isReachable = accessory.isReachable
+        self.reportLockStateChange()
 
         if accessory.isReachable {
             self.updateLockButtonImages()
@@ -199,9 +203,10 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
     }
 
     private func reportLockStateChange() {
+        let state = !self.isReachable ? "unreachable" : self.isLocked ? "locked" : "unlocked"
         var request = URLRequest(url: LockViewController.REPORT_URL)
         request.httpMethod = "POST"
-        request.httpBody = try! JSONSerialization.data(withJSONObject: ["type": "lockStateChange", "locked": self.isLocked])
+        request.httpBody = try! JSONSerialization.data(withJSONObject: ["type": "lockStateChange", "state": state])
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
