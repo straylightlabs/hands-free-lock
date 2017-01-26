@@ -1,4 +1,3 @@
-const http = require('http');
 const utils = require('./utils');
 
 var LOCK_URL = 'http://192.168.0.3:8080/';
@@ -26,16 +25,27 @@ var presentMacAddressSet = new Set();
 var leavingMacAddressSet = new Set();
 var leftoverMacAddressSet = new Set();
 var leavingMacAddressClearTimer;
+var showOffColorTimer;
 
-function sendLockAction(action) {
-  var url = LOCK_URL + action;
-  http.get(url).on('error', function(e) {
-    console.error('ERROR GET ' + url + ' ' + e.message);
-  });
-}
 var sendUnlockAction = utils.throttle(5000, function() {
-  sendLockAction('unlock');
+  utils.get(LOCK_URL + 'unlock');
 });
+
+function sendShowOffColor() {
+  utils.get('http://192.168.0.6:8080/000,000,000');
+}
+
+function sendShowUnlockingColor() {
+  utils.get('http://192.168.0.6:8080/050,050,255');
+  clearTimeout(showOffColorTimer);
+  showOffColorTimer = setTimeout(sendShowOffColor, 3000);
+}
+
+function sendShowUnlockedColor() {
+  utils.get('http://192.168.0.6:8080/050,255,050');
+  clearTimeout(showOffColorTimer);
+  showOffColorTimer = setTimeout(sendShowOffColor, 3000);
+}
 
 function clearAfterUnlock() {
   leavingMacAddressSet.clear();
@@ -44,6 +54,7 @@ function clearAfterUnlock() {
 }
 
 function unlock() {
+  sendShowUnlockingColor();
   sendUnlockAction();
   clearAfterUnlock();
 }
@@ -95,6 +106,7 @@ function processLockStateChange(state) {
     }, SECONDS_TO_LEAVE * 1000);
   } else if (state == 'unlocked') {
     console.info('UNLOCKED');
+    sendShowUnlockedColor();
     clearAfterUnlock();
   } else if (state == 'unreachable') {
     console.info('UNREACHABLE');
