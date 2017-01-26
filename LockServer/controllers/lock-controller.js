@@ -2,7 +2,7 @@ const http = require('http');
 const utils = require('./utils');
 
 var LOCK_URL = 'http://192.168.0.3:8080/';
-var SECONDS_TO_LEAVE = 1 * 60;
+var SECONDS_TO_LEAVE = 300;
 
 var URL_WHITELIST = new Set([
     'https://straylight.jp/one/00001',
@@ -16,10 +16,10 @@ var URL_WHITELIST = new Set([
     'https://straylight.jp/one/ujv3w',
     'https://straylight.jp/one/zz6n7',
 ]);
-var MAC_ADDRESS_WHITELIST = new Set([
-    'F0:2A:63:5C:E3:E5',  // SLBeacon00001
-    'EB:B4:73:21:AC:3C',  // SLBeacon00002 -> Daniel
-    'D7:AF:DA:DF:43:85',  // SLBeacon00003
+var MAC_ADDRESS_WHITELIST = new Map([
+    ['F0:2A:63:5C:E3:E5', 'Ryo'],
+    ['EB:B4:73:21:AC:3C', 'Daniel'],
+    ['D7:AF:DA:DF:43:85', 'Taj'],
 ]);
 
 var presentMacAddressSet = new Set();
@@ -58,22 +58,30 @@ function processNfc(url) {
 function processBle(macAddress, rssi) {
   if (rssi >= 0) {
     presentMacAddressSet.delete(macAddress);
-    return;
-  }
-  if (MAC_ADDRESS_WHITELIST.has(macAddress) &&
-      !leavingMacAddressSet.has(macAddress) &&
-      !leftoverMacAddressSet.has(macAddress) &&
-      !presentMacAddressSet.has(macAddress)) {
+    logPresentMembers();
+  } else if (MAC_ADDRESS_WHITELIST.has(macAddress) &&
+             !leavingMacAddressSet.has(macAddress) &&
+             !leftoverMacAddressSet.has(macAddress) &&
+             !presentMacAddressSet.has(macAddress)) {
     console.info('UNLOCKING with BLE: ' + macAddress);
     presentMacAddressSet.add(macAddress);
+    logPresentMembers();
     unlock();
   }
-  console.info('Present IDs: ' + [...presentMacAddressSet]);
 }
 
-function processManualLock(locked) {
-  if (locked) {
-    console.info('MANUALLY LOCKED');
+function logPresentMembers() {
+  var presentNames = [];
+  presentMacAddressSet.forEach(function(macAddress) {
+    var name = MAC_ADDRESS_WHITELIST.get(macAddress);
+    presentNames.push(name);
+  });
+  console.info('Present members: ' + presentNames);
+}
+
+function processLockStateChange(state) {
+  if (state == 'locked') {
+    console.info('LOCKED');
 
     leavingMacAddressSet = new Set(presentMacAddressSet);
     console.info('Leaving IDs: ' + [...leavingMacAddressSet]);
@@ -85,9 +93,13 @@ function processManualLock(locked) {
       leftoverMacAddressSet = new Set(presentMacAddressSet);
       console.info('Leftover IDs: ' + [...leftoverMacAddressSet]);
     }, SECONDS_TO_LEAVE * 1000);
-  } else {
-    console.info('MANUALLY UNLOCKED');
+  } else if (state == 'unlocked') {
+    console.info('UNLOCKED');
     clearAfterUnlock();
+  } else if (state == 'unreachable') {
+    console.info('UNREACHABLE');
+  } else {
+    console.error('Unknown lock state: ' + state);
   }
 }
 
@@ -97,8 +109,8 @@ function process(data) {
     processNfc(data.url);
   } else if (data.type == 'ble') {
     processBle(data.macAddress, data.rssi);
-  } else if (data.type == 'manualLock') {
-    processManualLock(data.locked);
+  } else if (data.type == 'lockStateChange') {
+    processLockStateChange(data.state);
   } else {
     console.error('Unknown message type: ' + data.type);
   }
