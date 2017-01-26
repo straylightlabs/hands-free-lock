@@ -1,6 +1,10 @@
 const http = require('http');
+const utils = require('./utils');
 
-var urlWhitelist = new Set([
+var LOCK_URL = 'http://192.168.0.3:8080/';
+var SECONDS_TO_LEAVE = 300;
+
+var URL_WHITELIST = new Set([
     'https://straylight.jp/one/00001',
     'https://straylight.jp/one/00002',
     'https://straylight.jp/one/vk2g7',
@@ -12,65 +16,113 @@ var urlWhitelist = new Set([
     'https://straylight.jp/one/ujv3w',
     'https://straylight.jp/one/zz6n7',
 ]);
-var macAddressWhitelist = new Set([
-    'F0:2A;63:5C;E3:E5',  // SLBeacon00001
-    'EB:B4:73:21:AC:3C',  // SLBeacon00002 -> Daniel
-    'D7:AF:DA:DF:43:85',  // SLBeacon00003
+var MAC_ADDRESS_WHITELIST = new Map([
+    ['F0:2A:63:5C:E3:E5', 'Ryo'],
+    ['EB:B4:73:21:AC:3C', 'Daniel'],
+    ['D7:AF:DA:DF:43:85', 'Taj'],
 ]);
 
-function send(action) {
-  var url = 'http://192.168.0.3:8080/' + action;
-  console.info('GET ' + url);
+var presentMacAddressSet = new Set();
+var leavingMacAddressSet = new Set();
+var leftoverMacAddressSet = new Set();
+var leavingMacAddressClearTimer;
+
+function sendLockAction(action) {
+  var url = LOCK_URL + action;
   http.get(url).on('error', function(e) {
     console.error('ERROR GET ' + url + ' ' + e.message);
   });
 }
-
-function throttle(seconds, callback) {
-  var lastExecutionTime;
-  return function() {
-    if (lastExecutionTime === undefined ||
-        new Date().getTime() >= lastExecutionTime.getTime() + seconds) {
-      callback();
-      lastExecutionTime = new Date();
-    }
-  };
-}
-
-var unlock = throttle(10000, function() {
-  send('unlock');
+var sendUnlockAction = utils.throttle(5000, function() {
+  sendLockAction('unlock');
 });
 
-function authorizeNfc(url) {
-  if (urlWhitelist.has(url)) {
+function clearAfterUnlock() {
+  leavingMacAddressSet.clear();
+  leftoverMacAddressSet.clear();
+  clearTimeout(leavingMacAddressClearTimer);
+}
+
+function unlock() {
+  sendUnlockAction();
+  clearAfterUnlock();
+}
+
+function processNfc(url) {
+  if (URL_WHITELIST.has(url)) {
+    console.info('UNLOCKING with NFC: ' + url);
     unlock();
   }
 }
 
-function authorizeBle(macAddress, rssi) {
-  if (macAddressWhitelist.has(macAddress) && rssi > -90) {
+function processBle(macAddress, rssi) {
+  if (rssi >= 0) {
+    presentMacAddressSet.delete(macAddress);
+    logPresentMembers();
+  } else if (MAC_ADDRESS_WHITELIST.has(macAddress) &&
+             !leavingMacAddressSet.has(macAddress) &&
+             !leftoverMacAddressSet.has(macAddress) &&
+             !presentMacAddressSet.has(macAddress)) {
+    console.info('UNLOCKING with BLE: ' + macAddress);
+    presentMacAddressSet.add(macAddress);
+    logPresentMembers();
     unlock();
   }
 }
 
-function authorize(data) {
+function logPresentMembers() {
+  var presentNames = [];
+  presentMacAddressSet.forEach(function(macAddress) {
+    var name = MAC_ADDRESS_WHITELIST.get(macAddress);
+    presentNames.push(name);
+  });
+  console.info('Present members: ' + presentNames);
+}
+
+function processLockStateChange(state) {
+  if (state == 'locked') {
+    console.info('LOCKED');
+
+    leavingMacAddressSet = new Set(presentMacAddressSet);
+    console.info('Leaving IDs: ' + [...leavingMacAddressSet]);
+
+    clearTimeout(leavingMacAddressClearTimer);
+    leavingMacAddressClearTimer = setTimeout(function() {
+      leavingMacAddressSet.clear();
+
+      leftoverMacAddressSet = new Set(presentMacAddressSet);
+      console.info('Leftover IDs: ' + [...leftoverMacAddressSet]);
+    }, SECONDS_TO_LEAVE * 1000);
+  } else if (state == 'unlocked') {
+    console.info('UNLOCKED');
+    clearAfterUnlock();
+  } else if (state == 'unreachable') {
+    console.info('UNREACHABLE');
+  } else {
+    console.error('Unknown lock state: ' + state);
+  }
+}
+
+function process(data) {
   console.info('RECEIVED: ' + JSON.stringify(data));
   if (data.type == 'nfc') {
-    authorizeNfc(data.url);
+    processNfc(data.url);
   } else if (data.type == 'ble') {
-    authorizeBle(data.macAddress, data.rssi);
+    processBle(data.macAddress, data.rssi);
+  } else if (data.type == 'lockStateChange') {
+    processLockStateChange(data.state);
   } else {
     console.error('Unknown message type: ' + data.type);
   }
 }
 
 exports.post = function(req, res) {
-  authorize(req.body);
+  process(req.body);
   res.send('OK');
 }
 
 exports.socket = function(message) {
   var data = JSON.parse(message);
-  authorize(data);
+  process(data);
 }
 
