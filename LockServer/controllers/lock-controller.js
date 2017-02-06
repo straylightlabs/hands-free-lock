@@ -1,4 +1,3 @@
-const http = require('http');
 const utils = require('./utils');
 
 var LOCK_URL = 'http://192.168.0.3:8080/';
@@ -17,25 +16,48 @@ var URL_WHITELIST = new Set([
     'https://straylight.jp/one/zz6n7',
 ]);
 var MAC_ADDRESS_WHITELIST = new Map([
-    ['F0:2A:63:5C:E3:E5', 'Ryo'],
-    ['EB:B4:73:21:AC:3C', 'Daniel'],
-    ['D7:AF:DA:DF:43:85', 'Taj'],
+    ['F0:2A:63:5C:E3:E5', ['SLBeacon99998', 'Ryo']],
+    ['EB:B4:73:21:AC:3C', ['SLBeacon99997', '']],
+    ['D7:AF:DA:DF:43:85', ['SLBeacon99999', 'Taj']],
+    ['E6:64:E0:C6:40:F1', ['SLBeacon00001', 'Alisaun']],
+    ['CA:5F:63:5B:17:D5', ['SLBeacon00002', 'Lauren']],
+    ['D6:60:A7:9F:E5:DF', ['SLBeacon00003', 'Daniel']],
+    ['C7:D7:61:92:28:85', ['SLBeacon00004', 'Roy']],
+    ['EF:EA:6A:BD:C7:29', ['SLBeacon00005', 'Jake']],
+    ['D5:DB:E9:EE:D8:BB', ['SLBeacon00006', 'Keigo']],
+    ['E7:A1:7A:F0:41:A6', ['SLBeacon00007', 'Ikue']],
+    // ['D8:3E:FB:33:28:FC', ['SLBeacon00008', '']],
+    // ['C2:12:FB:37:74:C6', ['SLBeacon00009', '']],
+    // ['C2:12:FB:37:74:C6', ['SLBeacon00010', '']],
+    // ['E3:DA:76:79:72:A2', ['SLBeacon00011', '']],
+    // ['CD:E9:12:5F:27:42', ['SLBeacon00012', '']],
 ]);
 
 var presentMacAddressSet = new Set();
 var leavingMacAddressSet = new Set();
 var leftoverMacAddressSet = new Set();
 var leavingMacAddressClearTimer;
+var showOffColorTimer;
 
-function sendLockAction(action) {
-  var url = LOCK_URL + action;
-  http.get(url).on('error', function(e) {
-    console.error('ERROR GET ' + url + ' ' + e.message);
-  });
-}
 var sendUnlockAction = utils.throttle(5000, function() {
-  sendLockAction('unlock');
+  utils.get(LOCK_URL + 'unlock');
 });
+
+function sendShowOffColor() {
+  utils.get('http://192.168.0.6:8080/000,000,000');
+}
+
+function sendShowUnlockingColor() {
+  utils.get('http://192.168.0.6:8080/050,050,255');
+  clearTimeout(showOffColorTimer);
+  showOffColorTimer = setTimeout(sendShowOffColor, 3000);
+}
+
+function sendShowUnlockedColor() {
+  utils.get('http://192.168.0.6:8080/050,255,050');
+  clearTimeout(showOffColorTimer);
+  showOffColorTimer = setTimeout(sendShowOffColor, 3000);
+}
 
 function clearAfterUnlock() {
   leavingMacAddressSet.clear();
@@ -44,6 +66,7 @@ function clearAfterUnlock() {
 }
 
 function unlock() {
+  sendShowUnlockingColor();
   sendUnlockAction();
   clearAfterUnlock();
 }
@@ -73,7 +96,7 @@ function processBle(macAddress, rssi) {
 function logPresentMembers() {
   var presentNames = [];
   presentMacAddressSet.forEach(function(macAddress) {
-    var name = MAC_ADDRESS_WHITELIST.get(macAddress);
+    var name = MAC_ADDRESS_WHITELIST.get(macAddress)[1];
     presentNames.push(name);
   });
   console.info('Present members: ' + presentNames);
@@ -95,6 +118,7 @@ function processLockStateChange(state) {
     }, SECONDS_TO_LEAVE * 1000);
   } else if (state == 'unlocked') {
     console.info('UNLOCKED');
+    sendShowUnlockedColor();
     clearAfterUnlock();
   } else if (state == 'unreachable') {
     console.info('UNREACHABLE');
