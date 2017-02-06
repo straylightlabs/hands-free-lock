@@ -71,7 +71,6 @@ public class MainActivity extends Activity implements ScanResultsReporter.Listen
 
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
-        bluetoothScanner = bluetoothAdapter.getBluetoothLeScanner();
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         resultsReporter = new ScanResultsReporter(REPORT_URL, this);
     }
@@ -80,6 +79,44 @@ public class MainActivity extends Activity implements ScanResultsReporter.Listen
     protected void onResume() {
         super.onResume();
 
+        requestPermissions();
+
+        // A permission required.
+        if (bluetoothScanner == null) {
+            bluetoothScanner = bluetoothAdapter.getBluetoothLeScanner();
+        }
+        if (bluetoothScanner != null) {
+            List<ScanFilter> filters = new ArrayList();
+            ScanSettings settings = new ScanSettings.Builder()
+                    .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                    .build();
+            bluetoothScanner.startScan(filters, settings, scanCallback);
+        }
+
+        final PendingIntent pendingIntent = PendingIntent.getActivity(
+                this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+        nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
+
+        resultsReporter.connect();
+    }
+
+    @Override
+    public void onPause() {
+        if (bluetoothScanner != null) {
+            bluetoothScanner.stopScan(scanCallback);
+        }
+        nfcAdapter.disableForegroundDispatch(this);
+
+        super.onPause();
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        String url = intent.getDataString();
+        resultsReporter.reportNfcScan(url);
+    }
+
+    private void requestPermissions() {
         List<Pair<String, Integer>> permissions = Arrays.asList(
                 Pair.create(Manifest.permission.ACCESS_COARSE_LOCATION, REQUEST_LOCATION_PERMISSION),
                 Pair.create(Manifest.permission.CAMERA, REQUEST_CAMERA_PERMISSION));
@@ -92,32 +129,6 @@ public class MainActivity extends Activity implements ScanResultsReporter.Listen
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
-
-        List<ScanFilter> filters = new ArrayList();
-        ScanSettings settings = new ScanSettings.Builder()
-                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-                .build();
-        bluetoothScanner.startScan(filters, settings, scanCallback);
-
-        final PendingIntent pendingIntent = PendingIntent.getActivity(
-                this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
-        nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
-
-        resultsReporter.connect();
-    }
-
-    @Override
-    public void onPause() {
-        bluetoothScanner.stopScan(scanCallback);
-        nfcAdapter.disableForegroundDispatch(this);
-
-        super.onPause();
-    }
-
-    @Override
-    public void onNewIntent(Intent intent) {
-        String url = intent.getDataString();
-        resultsReporter.reportNfcScan(url);
     }
 
     @Override
@@ -175,7 +186,7 @@ public class MainActivity extends Activity implements ScanResultsReporter.Listen
             return;
         }
         String macAddress = result.getDevice().getAddress();
-        resultsReporter.reportBleScan(result.getRssi(), macAddress);
+        resultsReporter.reportBleScan(result.getRssi(), macAddress, result.getDevice().getName());
     }
 
     private void addLog(String log) {
