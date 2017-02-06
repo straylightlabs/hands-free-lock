@@ -1,6 +1,7 @@
 package jp.straylight.scannerapp;
 
 import android.os.Handler;
+import android.util.Base64;
 import android.util.Log;
 
 import org.java_websocket.WebSocket;
@@ -22,7 +23,7 @@ class ScanResultsReporter {
     }
 
     private static final String TAG = "ScanResultsReporter";
-    private static double SECONDS_UNTIL_DISSAPPEARANCE = 10.0;
+    private static double SECONDS_UNTIL_DISSAPPEARANCE = 300.0;
 
     private Listener listener;
     private WebSocketClient webSocketClient;
@@ -121,14 +122,14 @@ class ScanResultsReporter {
         isConnecting = false;
     }
 
-    public void reportBleScan(int rssi, String macAddress) {
+    public void reportBleScan(int rssi, String macAddress, String deviceName) {
         RssiRange rssiRange = rssiRangeMap.get(macAddress);
         if (rssiRange == null) {
             rssiRange = new RssiRange();
             rssiRangeMap.put(macAddress, rssiRange);
         }
         if (rssiRange.shouldReportRssi(rssi)) {
-            reportBleScanInternal(rssi, macAddress);
+            reportBleScanInternal(rssi, macAddress, deviceName);
         }
     }
 
@@ -137,8 +138,14 @@ class ScanResultsReporter {
         report(data);
     }
 
-    private void reportBleScanInternal(int rssi, String macAddress) {
-        String data = String.format("{\"type\": \"ble\", \"rssi\": %d, \"macAddress\": \"%s\"}", rssi, macAddress);
+    public void reportImage(byte[] bytes) {
+        String base64Bytes = Base64.encodeToString(bytes, Base64.NO_WRAP);
+        String data = String.format("{\"type\": \"image\", \"data\": \"%s\"}", base64Bytes);
+        report(data);
+    }
+
+    private void reportBleScanInternal(int rssi, String macAddress, String deviceName) {
+        String data = String.format("{\"type\": \"ble\", \"rssi\": %d, \"macAddress\": \"%s\", \"deviceName\": \"%s\"}", rssi, macAddress, deviceName);
         report(data);
     }
 
@@ -149,13 +156,15 @@ class ScanResultsReporter {
         }
 
         webSocketClient.send(data);
-        listener.onReport(data);
+        if (listener != null) {
+            listener.onReport(data);
+        }
     }
 
     private void reportDisappearance() {
         for (Map.Entry<String, RssiRange> rssiRange : rssiRangeMap.entrySet()) {
             if (rssiRange.getValue().shouldReportDisappearance()) {
-                reportBleScanInternal(255 /* RSSI */, rssiRange.getKey());
+                reportBleScanInternal(255 /* RSSI */, rssiRange.getKey(), "");
             }
         }
     }
@@ -184,11 +193,15 @@ class ScanResultsReporter {
 
     private void logError(String message) {
         Log.e(TAG, message);
-        listener.onReport("ERROR: " + message);
+        if (listener != null) {
+            listener.onReport("ERROR: " + message);
+        }
     }
 
     private void logInfo(String message) {
         Log.i(TAG, message);
-        listener.onReport(message);
+        if (listener != null) {
+            listener.onReport(message);
+        }
     }
 }
