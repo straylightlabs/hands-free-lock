@@ -16,9 +16,21 @@ var URL_WHITELIST = new Set([
     'https://straylight.jp/one/zz6n7',
 ]);
 var MAC_ADDRESS_WHITELIST = new Map([
-    ['F0:2A:63:5C:E3:E5', 'Ryo'],
-    ['EB:B4:73:21:AC:3C', 'Daniel'],
-    ['D7:AF:DA:DF:43:85', 'Taj'],
+    ['F0:2A:63:5C:E3:E5', ['SLBeacon99998', 'Ryo']],
+    ['EB:B4:73:21:AC:3C', ['SLBeacon99997', '']],
+    ['D7:AF:DA:DF:43:85', ['SLBeacon99999', 'Taj']],
+    ['E6:64:E0:C6:40:F1', ['SLBeacon00001', 'Alisaun']],
+    ['CA:5F:63:5B:17:D5', ['SLBeacon00002', 'Lauren']],
+    ['D6:60:A7:9F:E5:DF', ['SLBeacon00003', 'Daniel']],
+    ['C7:D7:61:92:28:85', ['SLBeacon00004', 'Roy']],
+    ['EF:EA:6A:BD:C7:29', ['SLBeacon00005', 'Jake']],
+    ['D5:DB:E9:EE:D8:BB', ['SLBeacon00006', 'Keigo']],
+    ['E7:A1:7A:F0:41:A6', ['SLBeacon00007', 'Ikue']],
+    // ['D8:3E:FB:33:28:FC', ['SLBeacon00008', '']],
+    // ['C2:12:FB:37:74:C6', ['SLBeacon00009', '']],
+    // ['C2:12:FB:37:74:C6', ['SLBeacon00010', '']],
+    // ['E3:DA:76:79:72:A2', ['SLBeacon00011', '']],
+    // ['CD:E9:12:5F:27:42', ['SLBeacon00012', '']],
 ]);
 
 var presentMacAddressSet = new Set();
@@ -84,7 +96,7 @@ function processBle(macAddress, rssi) {
 function logPresentMembers() {
   var presentNames = [];
   presentMacAddressSet.forEach(function(macAddress) {
-    var name = MAC_ADDRESS_WHITELIST.get(macAddress);
+    var name = MAC_ADDRESS_WHITELIST.get(macAddress)[1];
     presentNames.push(name);
   });
   console.info('Present members: ' + presentNames);
