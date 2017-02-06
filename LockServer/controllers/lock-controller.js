@@ -38,6 +38,7 @@ var leavingMacAddressSet = new Set();
 var leftoverMacAddressSet = new Set();
 var leavingMacAddressClearTimer;
 var showOffColorTimer;
+var latestJpegData;
 
 var sendUnlockAction = utils.throttle(5000, function() {
   utils.get(LOCK_URL + 'unlock');
@@ -72,6 +73,7 @@ function unlock() {
 }
 
 function processNfc(url) {
+  console.info('processNfc: ' + url);
   if (URL_WHITELIST.has(url)) {
     console.info('UNLOCKING with NFC: ' + url);
     unlock();
@@ -79,6 +81,7 @@ function processNfc(url) {
 }
 
 function processBle(macAddress, rssi) {
+  console.info('processBle: ' + macAddress + ' RSSI=' + rssi);
   if (rssi >= 0) {
     presentMacAddressSet.delete(macAddress);
     logPresentMembers();
@@ -103,6 +106,7 @@ function logPresentMembers() {
 }
 
 function processLockStateChange(state) {
+  console.info('processLockStateChange: ' + state);
   if (state == 'locked') {
     console.info('LOCKED');
 
@@ -127,14 +131,19 @@ function processLockStateChange(state) {
   }
 }
 
+function processImage(data) {
+  latestJpegData = Buffer.from(data, 'base64');
+}
+
 function process(data) {
-  console.info('RECEIVED: ' + JSON.stringify(data));
   if (data.type == 'nfc') {
     processNfc(data.url);
   } else if (data.type == 'ble') {
     processBle(data.macAddress, data.rssi);
   } else if (data.type == 'lockStateChange') {
     processLockStateChange(data.state);
+  } else if (data.type == 'image') {
+    processImage(data.data);
   } else {
     console.error('Unknown message type: ' + data.type);
   }
@@ -148,5 +157,13 @@ exports.post = function(req, res) {
 exports.socket = function(message) {
   var data = JSON.parse(message);
   process(data);
+}
+
+exports.getLatestImage = function(req, res) {
+  if (!latestJpegData) {
+    return res.status(404).send('Not found');
+  }
+  res.writeHead(200, {'Content-Type': 'image/jpeg'});
+  res.end(latestJpegData);
 }
 
