@@ -33,6 +33,7 @@ var MAC_ADDRESS_WHITELIST = new Map([
     // ['CD:E9:12:5F:27:42', ['SLBeacon00012', '']],
 ]);
 
+var lastSeenMap = new Map();
 var presentMacAddressSet = new Set();
 var leavingMacAddressSet = new Set();
 var leftoverMacAddressSet = new Set();
@@ -69,19 +70,28 @@ function processNfc(url) {
 
 function processBle(macAddress, rssi) {
   console.info('processBle: ' + macAddress + ' RSSI=' + rssi);
-  if (rssi >= 0) {
-    presentMacAddressSet.delete(macAddress);
-    logPresentMembers();
-  } else if (MAC_ADDRESS_WHITELIST.has(macAddress) &&
-             !leavingMacAddressSet.has(macAddress) &&
-             !leftoverMacAddressSet.has(macAddress) &&
-             !presentMacAddressSet.has(macAddress)) {
+  lastSeenMap.set(macAddress, new Date().getTime());
+  if (MAC_ADDRESS_WHITELIST.has(macAddress) &&
+      !leavingMacAddressSet.has(macAddress) &&
+      !leftoverMacAddressSet.has(macAddress) &&
+      !presentMacAddressSet.has(macAddress)) {
     console.info('UNLOCKING with BLE: ' + macAddress);
     presentMacAddressSet.add(macAddress);
     logPresentMembers();
     unlock();
   }
 }
+
+setInterval(function() {
+  var now = new Date().getTime();
+  for (var [macAddress, lastSeen] of lastSeenMap) {
+    if (lastSeen !== undefined && now - lastSeen >= 300) {
+      presentMacAddressSet.delete(macAddress);
+      logPresentMembers();
+      lastSeenMap[macAddress] = undefined;
+    }
+  }
+}, 60 * 1000);
 
 function logPresentMembers() {
   var presentNames = [];
