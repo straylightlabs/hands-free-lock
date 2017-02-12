@@ -10,9 +10,6 @@ import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,47 +20,11 @@ class ScanResultsReporter {
     }
 
     private static final String TAG = "ScanResultsReporter";
-    private static double SECONDS_UNTIL_DISSAPPEARANCE = 300.0;
 
     private Listener listener;
     private WebSocketClient webSocketClient;
     private URI uri;
     private boolean isConnecting = false;
-    private Map<String, RssiRange> rssiRangeMap = new HashMap();
-
-    private class RssiRange {
-        public Integer max = null;
-        public Integer min = null;
-        public Date lastSignalSeen;
-
-        public boolean shouldReportRssi(int rssi) {
-            boolean shouldReport = false;
-            if (max == null || rssi > max) {
-                max = rssi;
-                shouldReport = true;
-            }
-            if (min == null || rssi < min) {
-                min = rssi;
-                shouldReport = true;
-            }
-            lastSignalSeen = new Date();
-            return shouldReport;
-        }
-
-        public boolean shouldReportDisappearance() {
-            if (lastSignalSeen == null) {
-                return false;
-            }
-            long secondsElapsed = (new Date().getTime() - lastSignalSeen.getTime()) / 1000;
-            boolean disappeared = secondsElapsed >= SECONDS_UNTIL_DISSAPPEARANCE;
-            if (disappeared) {
-                max = null;
-                min = null;
-                lastSignalSeen = null;
-            }
-            return disappeared;
-        }
-    }
 
     public ScanResultsReporter(String url, Listener listener) {
         this.listener = listener;
@@ -78,7 +39,6 @@ class ScanResultsReporter {
             @Override
             public void run() {
                 reconnect();
-                reportDisappearance();
             }
         }, 10000);
     }
@@ -122,30 +82,19 @@ class ScanResultsReporter {
         isConnecting = false;
     }
 
-    public void reportBleScan(int rssi, String macAddress, String deviceName) {
-        RssiRange rssiRange = rssiRangeMap.get(macAddress);
-        if (rssiRange == null) {
-            rssiRange = new RssiRange();
-            rssiRangeMap.put(macAddress, rssiRange);
-        }
-        if (rssiRange.shouldReportRssi(rssi)) {
-            reportBleScanInternal(rssi, macAddress, deviceName);
-        }
-    }
-
     public void reportNfcScan(String url) {
         String data = String.format("{\"type\": \"nfc\", \"url\": \"%s\"}", url);
+        report(data);
+    }
+
+    public void reportBleScan(int rssi, String macAddress, String deviceName) {
+        String data = String.format("{\"type\": \"ble\", \"rssi\": %d, \"macAddress\": \"%s\", \"deviceName\": \"%s\"}", rssi, macAddress, deviceName);
         report(data);
     }
 
     public void reportImage(byte[] bytes) {
         String base64Bytes = Base64.encodeToString(bytes, Base64.NO_WRAP);
         String data = String.format("{\"type\": \"image\", \"data\": \"%s\"}", base64Bytes);
-        report(data);
-    }
-
-    private void reportBleScanInternal(int rssi, String macAddress, String deviceName) {
-        String data = String.format("{\"type\": \"ble\", \"rssi\": %d, \"macAddress\": \"%s\", \"deviceName\": \"%s\"}", rssi, macAddress, deviceName);
         report(data);
     }
 
@@ -158,14 +107,6 @@ class ScanResultsReporter {
         webSocketClient.send(data);
         if (listener != null) {
             listener.onReport(data);
-        }
-    }
-
-    private void reportDisappearance() {
-        for (Map.Entry<String, RssiRange> rssiRange : rssiRangeMap.entrySet()) {
-            if (rssiRange.getValue().shouldReportDisappearance()) {
-                reportBleScanInternal(255 /* RSSI */, rssiRange.getKey(), "");
-            }
         }
     }
 

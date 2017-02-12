@@ -81,7 +81,7 @@ public class CameraService extends Service {
 
     public void readyCamera() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            Log.e(TAG, "readyCamera does noth have permission");
+            Log.e(TAG, "readyCamera does not have permission");
             return;
         }
         CameraManager manager = (CameraManager) getSystemService(CAMERA_SERVICE);
@@ -92,7 +92,6 @@ public class CameraService extends Service {
             final int NUM_BUFFERS = 2;
             imageReader = ImageReader.newInstance(320, 240, ImageFormat.JPEG, NUM_BUFFERS);
             imageReader.setOnImageAvailableListener(onImageAvailableListener, null);
-            Log.i(TAG, "imageReader created");
         } catch (CameraAccessException e){
             Log.e(TAG, e.getMessage());
         }
@@ -164,13 +163,7 @@ public class CameraService extends Service {
 
     protected CaptureRequest createCaptureRequest() {
         try {
-            CaptureRequest.Builder builder = device.createCaptureRequest(CameraDevice.TEMPLATE_MANUAL);
-            builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-            builder.set(CaptureRequest.CONTROL_AWB_MODE, CaptureRequest.CONTROL_AWB_MODE_OFF);
-            builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_OFF);
-            builder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, Long.valueOf("100000000"));
-            builder.set(CaptureRequest.SENSOR_SENSITIVITY, 1600);
-
+            CaptureRequest.Builder builder = device.createCaptureRequest(CameraDevice.TEMPLATE_RECORD);
             builder.addTarget(imageReader.getSurface());
             return builder.build();
         } catch (CameraAccessException e) {
