@@ -20,12 +20,15 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
 
     @IBOutlet weak var lockButton: UIButton!
     @IBOutlet weak var delayLockButton: UIButton!
+    @IBOutlet weak var keepConnectionSwitch: UISwitch!
 
     private var server = LockHttpServer()
     private let homeManager = HMHomeManager()
     private var targetLockState: HMCharacteristic?
     private var countDownTimer: Timer?
+    private var keepConnectionTimer: Timer?
     private var countDownSec = COUNT_DOWN_TOTAL_SEC
+    private var isReachable = true
     private var isUpdatingLockState = false {
         didSet {
             self.updateLockButtonImages()
@@ -43,6 +46,7 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
 
         self.lockButton.addTarget(self, action: #selector(didTouchLockButton), for: .touchDown)
         self.delayLockButton.addTarget(self, action: #selector(didTouchDelayLockButton), for: .touchDown)
+        self.keepConnectionSwitch.addTarget(self, action: #selector(didTouchKeepConnectionSwitch), for: .valueChanged)
     }
 
     override func didReceiveMemoryWarning() {
@@ -82,6 +86,9 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
     func accessoryDidUpdateReachability(_ accessory: HMAccessory) {
         print("INFO: The lock became \(accessory.isReachable ? "reachable" : "not reachable").")
 
+        self.isReachable = accessory.isReachable
+        self.reportLockStateChange()
+
         if accessory.isReachable {
             self.updateLockButtonImages()
         } else {
@@ -105,6 +112,15 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
 
         self.countDownTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(countDownToLock), userInfo: nil, repeats: true)
         self.updateLockButtonImages()
+    }
+
+    func didTouchKeepConnectionSwitch(sender: UISwitch) {
+        self.keepConnectionSwitch.isOn = !self.keepConnectionSwitch.isOn
+        if self.keepConnectionSwitch.isOn {
+            self.keepConnectionTimer = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(connectToTargetState), userInfo: nil, repeats: true)
+        } else {
+            self.keepConnectionTimer?.invalidate()
+        }
     }
 
     func countDownToLock() {
@@ -131,10 +147,11 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
             return
         }
 
+        self.keepConnectionTimer?.invalidate()
+        self.keepConnectionSwitch.isOn = false
+
         self.isUpdatingLockState = true
         print("INFO: Updating the lock state: \(shouldLock ? "LOCKED" : "UNLOCKED").")
-
-        reportLockAction(shouldLock)
 
         if let state = self.targetLockState {
             state.writeValue(shouldLock ? 1 : 0) { error in
@@ -147,10 +164,20 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
         }
     }
 
+    func connectToTargetState() {
+        self.targetLockState?.readValue { error in
+            if error != nil {
+                print("ERROR: Failed to read the lock state.")
+            }
+        }
+    }
+
     private func didUpdateStateWith(_ characteristic: HMCharacteristic) {
         self.isLocked = characteristic.value as? Int == 1
         self.isUpdatingLockState = false
         self.updateLockButtonImages()
+
+        self.reportLockStateChange()
 
         print("INFO: Lock state updated: \(self.isLocked ? "LOCKED" : "UNLOCKED").")
     }
@@ -175,10 +202,11 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
         }
     }
 
-    private func reportLockAction(_ shouldLock: Bool) {
+    private func reportLockStateChange() {
+        let state = !self.isReachable ? "unreachable" : self.isLocked ? "locked" : "unlocked"
         var request = URLRequest(url: LockViewController.REPORT_URL)
         request.httpMethod = "POST"
-        request.httpBody = try! JSONSerialization.data(withJSONObject: ["type": "manualLock", "locked": shouldLock])
+        request.httpBody = try! JSONSerialization.data(withJSONObject: ["type": "lockStateChange", "state": state])
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {

@@ -1,7 +1,8 @@
 package jp.straylight.scannerapp;
 
-import android.util.Log;
 import android.os.Handler;
+import android.util.Base64;
+import android.util.Log;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
@@ -9,17 +10,25 @@ import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.TimerTask;
 import java.util.Timer;
+import java.util.TimerTask;
 
 class ScanResultsReporter {
+
+    public interface Listener {
+        void onReport(String report);
+    }
+
     private static final String TAG = "ScanResultsReporter";
 
+    private Listener listener;
     private WebSocketClient webSocketClient;
     private URI uri;
     private boolean isConnecting = false;
 
-    public ScanResultsReporter(String url) {
+    public ScanResultsReporter(String url, Listener listener) {
+        this.listener = listener;
+
         try {
             uri = new URI(url);
         } catch (URISyntaxException e) {
@@ -42,51 +51,63 @@ class ScanResultsReporter {
         webSocketClient = new WebSocketClient(uri) {
             @Override
             public void onOpen(ServerHandshake serverHandshake) {
-                Log.i(TAG, "onOpen");
+                logInfo("WebSocket opened");
             }
 
             @Override
             public void onMessage(String s) {
-                Log.i(TAG, "onMessage:" + s);
+                logInfo("WebSocket message: " + s);
             }
 
             @Override
             public void onClose(int i, String s, boolean b) {
-                Log.i(TAG, "onClose:" + s);
+                logInfo("WebSocket closed");
             }
 
             @Override
             public void onError(Exception e) {
-                Log.i(TAG, "onError:" + e.getMessage());
+                logError("WebSocket error: " + e.getMessage());
             }
         };
+        logInfo("Opening WebSocket");
         webSocketClient.connect();
         isConnecting = true;
     }
 
     public void disconnect() {
         if (webSocketClient != null) {
+            logInfo("Closing WebSocket");
             webSocketClient.close();
         }
         isConnecting = false;
     }
 
-    public void sendBleScan(int rssi, String macAddress) {
-        if (!isConnected()) {
-            Log.e(TAG, "WebSocket is not open.");
-            return;
-        }
-        String report = String.format("{\"type\":\"ble\",\"rssi\":%d,\"macAddress\":\"%s\"}",rssi, macAddress);
-        webSocketClient.send(report);
+    public void reportNfcScan(String url) {
+        String data = String.format("{\"type\": \"nfc\", \"url\": \"%s\"}", url);
+        report(data);
     }
 
-    public void sendNfcScan(String url) {
+    public void reportBleScan(int rssi, String macAddress, String deviceName) {
+        String data = String.format("{\"type\": \"ble\", \"rssi\": %d, \"macAddress\": \"%s\", \"deviceName\": \"%s\"}", rssi, macAddress, deviceName);
+        report(data);
+    }
+
+    public void reportImage(byte[] bytes) {
+        String base64Bytes = Base64.encodeToString(bytes, Base64.NO_WRAP);
+        String data = String.format("{\"type\": \"image\", \"data\": \"%s\"}", base64Bytes);
+        report(data);
+    }
+
+    private void report(String data) {
         if (!isConnected()) {
-            Log.e(TAG, "WebSocket is not open.");
+            logError("WebSocket is not open.");
             return;
         }
-        String report = String.format("{\"type\": \"nfc\",\"url\":\"%s\"}", url);
-        webSocketClient.send(report);
+
+        webSocketClient.send(data);
+        if (listener != null) {
+            listener.onReport(data);
+        }
     }
 
     private void reconnect() {
@@ -109,5 +130,19 @@ class ScanResultsReporter {
                 handler.post(r);
             }
         }, interval, interval);
+    }
+
+    private void logError(String message) {
+        Log.e(TAG, message);
+        if (listener != null) {
+            listener.onReport("ERROR: " + message);
+        }
+    }
+
+    private void logInfo(String message) {
+        Log.i(TAG, message);
+        if (listener != null) {
+            listener.onReport(message);
+        }
     }
 }

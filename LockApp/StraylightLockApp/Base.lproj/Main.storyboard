@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -29,17 +30,23 @@
                                 <rect key="frame" x="110.5" y="572" width="153" height="30"/>
                                 <state key="normal" title="Lock after 20 seconds"/>
                             </button>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="mdO-dT-MuH">
+                                <rect key="frame" x="16" y="32" width="51" height="31"/>
+                            </switch>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="rAi-vd-guC" firstAttribute="centerX" secondItem="tsR-hK-woN" secondAttribute="centerX" id="9OF-YI-pX9"/>
+                            <constraint firstItem="mdO-dT-MuH" firstAttribute="top" secondItem="Ia1-K6-d13" secondAttribute="bottom" constant="12" id="Cb0-d3-lWt"/>
                             <constraint firstItem="ocn-m5-twk" firstAttribute="centerY" secondItem="tsR-hK-woN" secondAttribute="centerY" id="Osh-OE-A3s"/>
                             <constraint firstItem="4ug-Mw-9AY" firstAttribute="top" secondItem="rAi-vd-guC" secondAttribute="bottom" constant="65" id="ZUd-GW-CM4"/>
                             <constraint firstItem="ocn-m5-twk" firstAttribute="centerX" secondItem="tsR-hK-woN" secondAttribute="centerX" id="ovU-k2-8Ae"/>
+                            <constraint firstItem="mdO-dT-MuH" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leadingMargin" id="wkJ-vw-zd0"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="delayLockButton" destination="rAi-vd-guC" id="Krt-Y9-6TN"/>
+                        <outlet property="keepConnectionSwitch" destination="mdO-dT-MuH" id="ybQ-DD-Jrs"/>
                         <outlet property="lockButton" destination="ocn-m5-twk" id="ZWd-TS-3oN"/>
                     </connections>
                 </viewController>

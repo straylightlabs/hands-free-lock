@@ -8,5 +8,6 @@ module.exports = function(app) {
   app.use(express.static(path.join(__dirname, 'static')))
   app.get('/', indexController.get);
   app.post('/report', lockController.post);
+  app.get('/image', lockController.getLatestImage);
 }
 
