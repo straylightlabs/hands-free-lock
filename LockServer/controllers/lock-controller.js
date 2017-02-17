@@ -16,9 +16,9 @@ var URL_WHITELIST = new Set([
     'https://straylight.jp/one/zz6n7',
 ]);
 var MAC_ADDRESS_WHITELIST = new Map([
-    ['F0:2A:63:5C:E3:E5', ['SLBeacon99998', 'Ryo']],
-    ['EB:B4:73:21:AC:3C', ['SLBeacon99997', '']],
-    ['D7:AF:DA:DF:43:85', ['SLBeacon99999', 'Taj']],
+    //['F0:2A:63:5C:E3:E5', ['SLBeacon99998', '']],
+    //['EB:B4:73:21:AC:3C', ['SLBeacon99997', '']],
+    //['D7:AF:DA:DF:43:85', ['SLBeacon99999', '']],
     ['E6:64:E0:C6:40:F1', ['SLBeacon00001', 'Alisaun']],
     ['CA:5F:63:5B:17:D5', ['SLBeacon00002', 'Lauren']],
     ['D6:60:A7:9F:E5:DF', ['SLBeacon00003', 'Daniel']],
@@ -26,8 +26,8 @@ var MAC_ADDRESS_WHITELIST = new Map([
     ['EF:EA:6A:BD:C7:29', ['SLBeacon00005', 'Jake']],
     ['D5:DB:E9:EE:D8:BB', ['SLBeacon00006', 'Keigo']],
     ['E7:A1:7A:F0:41:A6', ['SLBeacon00007', 'Ikue']],
-    // ['D8:3E:FB:33:28:FC', ['SLBeacon00008', '']],
-    // ['C2:12:FB:37:74:C6', ['SLBeacon00009', '']],
+    ['D8:3E:FB:33:28:FC', ['SLBeacon00008', 'Taj']],
+    ['C2:12:FB:37:74:C6', ['SLBeacon00009', 'Ryo']],
     // ['C2:12:FB:37:74:C6', ['SLBeacon00010', '']],
     // ['E3:DA:76:79:72:A2', ['SLBeacon00011', '']],
     // ['CD:E9:12:5F:27:42', ['SLBeacon00012', '']],
@@ -45,7 +45,7 @@ var sendUnlockAction = utils.throttle(5000, function() {
 });
 
 function pulseLEDs() {
-  utils.get('http://192.168.0.6:8080/pulse(200,200,200,1,3)');
+  utils.get('http://192.168.0.6:8080/pulse(200,200,200,1,1)');
 }
 
 function clearAfterUnlock() {
@@ -58,6 +58,14 @@ function unlock() {
   sendUnlockAction();
   clearAfterUnlock();
   pulseLEDs();
+}
+
+function getOwner(macAddress) {
+  var ownerData = MAC_ADDRESS_WHITELIST.get(macAddress);
+  if (!ownerData) {
+    return 'Unknown Owner';
+  }
+  return ownerData[1];
 }
 
 function processNfc(url) {
@@ -77,6 +85,7 @@ function processBle(macAddress, rssi) {
       !presentMacAddressSet.has(macAddress)) {
     console.info('UNLOCKING with BLE: ' + macAddress);
     presentMacAddressSet.add(macAddress);
+    console.info('Found ' + macAddress + ' ' + getOwner(macAddress));
     logPresentMembers();
     unlock();
   }
@@ -85,10 +94,11 @@ function processBle(macAddress, rssi) {
 setInterval(function() {
   var now = new Date().getTime();
   for (var [macAddress, lastSeen] of lastSeenMap) {
-    if (lastSeen !== undefined && now - lastSeen >= 300) {
+    if (lastSeen !== undefined && now - lastSeen >= 300 * 1000) {
       presentMacAddressSet.delete(macAddress);
+      console.info('Lost ' + macAddress + ' ' + getOwner(macAddress));
       logPresentMembers();
-      lastSeenMap[macAddress] = undefined;
+      lastSeenMap.delete(macAddress);
     }
   }
 }, 60 * 1000);
