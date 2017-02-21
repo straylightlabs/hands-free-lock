@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
-import sys
+import datetime
 import requests
+import sys
+import time
 
 from subprocess import PIPE, Popen
 from threading  import Thread
@@ -20,14 +22,29 @@ t = Thread(target=enqueue_output, args=(p.stdout, q))
 t.daemon = True  # thread dies with the program
 t.start()
 
+def log(msg):
+    msgStr = '%s %s' % (datetime.datetime.now().isoformat(), str(msg))
+    print msgStr
+    with open('/var/log/blescan.log', 'a') as f:
+        f.write(msgStr)
+        f.write('\n')
+
 def post_scan(mac_address, device_name):
-    data = {"type": "ble", "rssi": -100, "macAddress": mac_address, "deviceName": device_name}
+    data = {
+        'type': 'ble',
+        'rssi': -100,
+        'macAddress': mac_address,
+        'deviceName': device_name,
+        'source': 'INDOOR_SCANNER'
+    }
+    log(data)
     requests.post('http://192.168.0.5:8080/report', data=data)
 
-while True:
+while p.poll() is None:
     try:
         line = q.get_nowait()
     except Empty:
+        time.sleep(0.01)
         continue
     else:
 	parts = line.split()
@@ -35,3 +52,6 @@ while True:
         device_name = parts[1]
         if device_name.startswith('SLBeacon'):
             post_scan(mac_address, device_name)
+
+log('Existing.')
+
