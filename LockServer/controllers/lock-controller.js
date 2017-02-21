@@ -69,7 +69,6 @@ function formatBeacon(macAddress) {
 }
 
 function processNfc(url) {
-  console.info('processNfc: ' + url);
   if (URL_WHITELIST.has(url)) {
     console.info('UNLOCKING with NFC: ' + url);
     unlock();
@@ -77,7 +76,6 @@ function processNfc(url) {
 }
 
 function processBle(macAddress, rssi) {
-  console.info('processBle: ' + macAddress + ' RSSI=' + rssi);
   lastSeenMap.set(macAddress, new Date().getTime());
   if (MAC_ADDRESS_WHITELIST.has(macAddress) &&
       !leavingMacAddressSet.has(macAddress) &&
