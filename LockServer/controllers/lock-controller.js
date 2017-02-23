@@ -1,6 +1,7 @@
 const utils = require('./utils');
 
-var LOCK_URL = 'http://192.168.0.3:8080/';
+var LOCK_URL = 'http://192.168.0.3:8080';
+var LED_URL = 'http://192.168.0.6:8080';
 var SECONDS_TO_LEAVE = 300;
 
 var URL_WHITELIST = new Set([
@@ -16,21 +17,18 @@ var URL_WHITELIST = new Set([
     'https://straylight.jp/one/zz6n7',
 ]);
 var MAC_ADDRESS_WHITELIST = new Map([
-    //['F0:2A:63:5C:E3:E5', ['SLBeacon99998', '']],
-    //['EB:B4:73:21:AC:3C', ['SLBeacon99997', '']],
-    //['D7:AF:DA:DF:43:85', ['SLBeacon99999', '']],
-    ['E6:64:E0:C6:40:F1', ['SLBeacon00001', 'Alisaun']],
-    ['CA:5F:63:5B:17:D5', ['SLBeacon00002', 'Lauren']],
-    ['D6:60:A7:9F:E5:DF', ['SLBeacon00003', 'Daniel']],
-    ['C7:D7:61:92:28:85', ['SLBeacon00004', 'Roy']],
-    ['EF:EA:6A:BD:C7:29', ['SLBeacon00005', 'Jake']],
-    ['D5:DB:E9:EE:D8:BB', ['SLBeacon00006', 'Keigo']],
-    ['E7:A1:7A:F0:41:A6', ['SLBeacon00007', 'Ikue']],
-    ['D8:3E:FB:33:28:FC', ['SLBeacon00008', 'Taj']],
-    ['CA:DC:C0:96:C1:A4', ['SLBeacon00009', 'Ryo']],
-    // ['C2:12:FB:37:74:C6', ['SLBeacon00010', '']],
-    // ['E3:DA:76:79:72:A2', ['SLBeacon00011', '']],
-    // ['CD:E9:12:5F:27:42', ['SLBeacon00012', '']],
+    ['E6:64:E0:C6:40:F1', ['SLBeacon00001', 'Alisaun', [182, 255, 0]]],
+    ['CA:5F:63:5B:17:D5', ['SLBeacon00002', 'Lauren',  [225, 0,   255]]],
+    ['D6:60:A7:9F:E5:DF', ['SLBeacon00003', 'Daniel',  [255, 255, 255]]],
+    ['C7:D7:61:92:28:85', ['SLBeacon00004', 'Roy',     [255, 255, 255]]],
+    ['EF:EA:6A:BD:C7:29', ['SLBeacon00005', 'Jake',    [255, 255, 255]]],
+    ['D5:DB:E9:EE:D8:BB', ['SLBeacon00006', 'Keigo',   [255, 255, 255]]],
+    ['E7:A1:7A:F0:41:A6', ['SLBeacon00007', 'Ikue',    [255, 255, 255]]],
+    ['D8:3E:FB:33:28:FC', ['SLBeacon00008', 'Taj',     [0,   135, 255]]],
+    ['CA:DC:C0:96:C1:A4', ['SLBeacon00009', 'Ryo',     [255, 102, 0]]],
+    // ['C2:12:FB:37:74:C6', ['SLBeacon00010', '', [255, 255, 255]]],
+    // ['E3:DA:76:79:72:A2', ['SLBeacon00011', '', [255, 255, 255]]],
+    // ['CD:E9:12:5F:27:42', ['SLBeacon00012', '', [255, 255, 255]]],
 ]);
 
 var lastSeenMap = new Map();
@@ -43,11 +41,24 @@ var indoorScannerLastHealthyTime = new Date();
 var outdoorScannerLastHealthyTime = new Date();
 
 var sendUnlockAction = utils.throttle(5000, function() {
-  utils.get(LOCK_URL + 'unlock');
+  utils.get(LOCK_URL + '/unlock');
 });
 
-function pulseLEDs() {
-  utils.get('http://192.168.0.6:8080/rainbow()');
+function showRainbowLEDPattern() {
+  utils.get(LED_URL + '/rainbow()');
+}
+
+function showPulseLEDPattern() {
+  utils.get(LED_URL + '/pulse(50,255,120,0.5,1)');
+}
+
+function setBaseLEDColor(macAddress) {
+  var data = MAC_ADDRESS_WHITELIST.get(macAddress);
+  if (!data || !data[2] || data[2].length != 3) {
+    utils.get(LED_URL + '/set_flicker(255,255,255)');
+    return;
+  }
+  utils.get(LED_URL + '/set_flicker(' + data[2].join(',') + ')');
 }
 
 function notify(text) {
@@ -68,7 +79,6 @@ function clearAfterUnlock() {
 function unlock() {
   sendUnlockAction();
   clearAfterUnlock();
-  pulseLEDs();
 }
 
 function formatBeacon(macAddress) {
@@ -82,6 +92,7 @@ function formatBeacon(macAddress) {
 function processNfc(url) {
   if (URL_WHITELIST.has(url)) {
     console.info('UNLOCKING with NFC: ' + url);
+    showPulseLEDPattern();
     unlock();
   }
 }
@@ -96,6 +107,7 @@ function processBle(macAddress, rssi) {
       !presentMacAddressSet.has(macAddress)) {
     presentMacAddressSet.add(macAddress);
     logFoundBeacon(macAddress);
+    setBaseLEDColor(macAddress);
     unlock();
   }
 }
@@ -163,6 +175,7 @@ function processLockStateChange(state) {
   } else if (state == 'unlocked') {
     console.info('UNLOCKED');
     clearAfterUnlock();
+    showRainbowLEDPattern();
   } else if (state == 'unreachable') {
     console.info('UNREACHABLE');
   } else {
