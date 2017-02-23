@@ -52,13 +52,18 @@ function showPulseLEDPattern() {
   utils.get(LED_URL + '/pulse(50,255,120,0.5,1)');
 }
 
+var setBaseLEDColorTimer = null;
 function setBaseLEDColor(macAddress) {
+  clearTimeout(setBaseLEDColorTimer);
+
   var data = MAC_ADDRESS_WHITELIST.get(macAddress);
   if (!data || !data[2] || data[2].length != 3) {
     utils.get(LED_URL + '/set_flicker(255,255,255)');
     return;
   }
   utils.get(LED_URL + '/set_flicker(' + data[2].join(',') + ')');
+
+  setBaseLEDColorTimer = setTimeout(setBaseLEDColor, 60 * 1000);
 }
 
 function notify(text) {
