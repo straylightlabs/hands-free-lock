@@ -5,6 +5,7 @@ const http = require('http');
 
 const router = require('./router');
 const socket = require('./socket');
+const health = require('./controllers/health-controller');
 
 const port = 8080;
 
@@ -21,4 +22,7 @@ server.on('request', app);
 server.listen(port, function () {
   console.log('Listening on ' + server.address().port);
 });
+
+console.log('Checking health every 10 mins');
+setInterval(health.checkHealth, 10 * 60 * 1000);
 
