@@ -87,9 +87,11 @@ function processNfc(url) {
 }
 
 function processBle(macAddress, rssi) {
+  if (!MAC_ADDRESS_WHITELIST.has(macAddress)) {
+    return;
+  }
   lastSeenMap.set(macAddress, new Date().getTime());
-  if (MAC_ADDRESS_WHITELIST.has(macAddress) &&
-      !leavingMacAddressSet.has(macAddress) &&
+  if (!leavingMacAddressSet.has(macAddress) &&
       !leftoverMacAddressSet.has(macAddress) &&
       !presentMacAddressSet.has(macAddress)) {
     presentMacAddressSet.add(macAddress);
