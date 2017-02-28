@@ -66,12 +66,12 @@ function setBaseLEDColor(macAddress) {
   setBaseLEDColorTimer = setTimeout(setBaseLEDColor, 60 * 1000);
 }
 
-function notify(text) {
+function notifyCheckInAndOut(text) {
   console.info(text);
   utils.notifySlack({
-    channel: '#alerts',
+    channel: '#logs',
     text: text,
-    username: 'Logger'
+    username: 'Check in & out'
   });
 }
 
@@ -154,12 +154,12 @@ function getPresentBeaconOwners() {
 
 function logLostBeacon(macAddress) {
   var msg = getOwner(macAddress) + ' left.\nPresent members: ' + getPresentBeaconOwners();
-  notify(msg);
+  notifyCheckInAndOut(msg);
 }
 
 function logFoundBeacon(macAddress) {
   var msg = getOwner(macAddress) + ' is arriving.\nPresent members: ' + getPresentBeaconOwners();
-  notify(msg);
+  notifyCheckInAndOut(msg);
 }
 
 function processLockStateChange(state) {

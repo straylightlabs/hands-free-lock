@@ -6,7 +6,7 @@ function notify(text) {
   utils.notifySlack({
     channel: '#alerts',
     text: text,
-    username: 'Lock System Checker'
+    username: 'Lock System Monitoring'
   });
 }
 
