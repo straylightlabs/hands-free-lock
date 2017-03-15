@@ -2,18 +2,23 @@ const utils = require('./utils');
 
 var LOCK_URL = 'http://192.168.0.3:8080';
 var LED_URL = 'http://192.168.0.6:8080';
-var SECONDS_TO_LEAVE = 300;
+var SECONDS_TO_LEAVE = 10 * 60;
+var SECONDS_TO_LOSE_SIGNAL = 5 * 60;
 
 var URL_WHITELIST = new Set([
     'https://straylight.jp/one/00001',
     'https://straylight.jp/one/00002',
-    'https://straylight.jp/one/vk2g7',
-    'https://straylight.jp/one/b4cz6',
-    'https://straylight.jp/one/6ej7n',
-    'https://straylight.jp/one/u36bx',
-    'https://straylight.jp/one/9y2tk',
     'https://straylight.jp/one/33fxm',
+    'https://straylight.jp/one/6ej7n',
+    'https://straylight.jp/one/9y2tk',
+    'https://straylight.jp/one/b4cz6',
+    'https://straylight.jp/one/f9rab',
+    'https://straylight.jp/one/hq2m8',
+    'https://straylight.jp/one/u36bx',
+    'https://straylight.jp/one/u7adh',
     'https://straylight.jp/one/ujv3w',
+    'https://straylight.jp/one/vk2g7',
+    'https://straylight.jp/one/z3qrh',
     'https://straylight.jp/one/zz6n7',
 ]);
 var MAC_ADDRESS_WHITELIST = new Map([
@@ -25,10 +30,10 @@ var MAC_ADDRESS_WHITELIST = new Map([
     ['D5:DB:E9:EE:D8:BB', ['SLBeacon00006', 'Keigo',   [255, 255, 255]]],
     ['E7:A1:7A:F0:41:A6', ['SLBeacon00007', 'Ikue',    [255, 255, 255]]],
     ['D8:3E:FB:33:28:FC', ['SLBeacon00008', 'Taj',     [0,   135, 255]]],
-    ['CA:DC:C0:96:C1:A4', ['SLBeacon00009', 'Ryo',     [255, 102, 0]]],
+    // ['CA:DC:C0:96:C1:A4', ['SLBeacon00009', '', [255, 255, 255]]],
     // ['C2:12:FB:37:74:C6', ['SLBeacon00010', '', [255, 255, 255]]],
-    // ['E3:DA:76:79:72:A2', ['SLBeacon00011', '', [255, 255, 255]]],
-    // ['CD:E9:12:5F:27:42', ['SLBeacon00012', '', [255, 255, 255]]],
+    ['E3:DA:76:79:72:A2', ['SLBeacon00011', 'Ryo', [255, 102, 0]]],
+    ['CD:E9:12:5F:27:42', ['SLBeacon00012', 'Anuraag', [255, 255, 255]]],
 ]);
 
 var lastSeenMap = new Map();
@@ -66,7 +71,12 @@ function setBaseLEDColor(macAddress) {
   setBaseLEDColorTimer = setTimeout(setBaseLEDColor, 60 * 1000);
 }
 
+var startupTime = new Date();
 function notifyCheckInAndOut(text) {
+  // Suppress log message during the startup.
+  if (new Date().getTime() - startupTime.getTime() < 60 * 1000) {
+    return;
+  }
   console.info(text);
   utils.notifySlack({
     channel: '#logs',
@@ -120,7 +130,7 @@ function processBle(macAddress, rssi) {
 setInterval(function() {
   var now = new Date().getTime();
   for (var [macAddress, lastSeen] of lastSeenMap) {
-    if (lastSeen !== undefined && now - lastSeen >= 60 * 1000) {
+    if (lastSeen !== undefined && now - lastSeen >= SECONDS_TO_LOSE_SIGNAL * 1000) {
       presentMacAddressSet.delete(macAddress);
       lastSeenMap.delete(macAddress);
       logLostBeacon(macAddress);
