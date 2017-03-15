@@ -12,6 +12,7 @@ var URL_WHITELIST = new Set([
     'https://straylight.jp/one/6ej7n',
     'https://straylight.jp/one/9y2tk',
     'https://straylight.jp/one/b4cz6',
+    'https://straylight.jp/one/cwqt5',
     'https://straylight.jp/one/f9rab',
     'https://straylight.jp/one/hq2m8',
     'https://straylight.jp/one/u36bx',
