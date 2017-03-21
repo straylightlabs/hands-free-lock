@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2A030F511E818B5F00D1F649 /* Reporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A030F501E818B5F00D1F649 /* Reporter.swift */; };
 		2A2DB1141E23533D00609F42 /* LockHttpServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A2DB1131E23533D00609F42 /* LockHttpServer.swift */; };
 		2A8FDCAE1E092E6B005B3694 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8FDCAD1E092E6B005B3694 /* AppDelegate.swift */; };
 		2A8FDCB01E092E6B005B3694 /* LockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8FDCAF1E092E6B005B3694 /* LockViewController.swift */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2A030F501E818B5F00D1F649 /* Reporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reporter.swift; sourceTree = "<group>"; };
 		2A2DB1131E23533D00609F42 /* LockHttpServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LockHttpServer.swift; sourceTree = "<group>"; };
 		2A8FDCAA1E092E6B005B3694 /* StraylightLockApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StraylightLockApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A8FDCAD1E092E6B005B3694 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -75,6 +77,7 @@
 				2A8FDCB81E092E6B005B3694 /* LaunchScreen.storyboard */,
 				2A8FDCBB1E092E6B005B3694 /* Info.plist */,
 				2A2DB1131E23533D00609F42 /* LockHttpServer.swift */,
+				2A030F501E818B5F00D1F649 /* Reporter.swift */,
 			);
 			path = StraylightLockApp;
 			sourceTree = "<group>";
@@ -226,6 +229,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A030F511E818B5F00D1F649 /* Reporter.swift in Sources */,
 				2A8FDCAE1E092E6B005B3694 /* AppDelegate.swift in Sources */,
 				2A2DB1141E23533D00609F42 /* LockHttpServer.swift in Sources */,
 				2A8FDCB01E092E6B005B3694 /* LockViewController.swift in Sources */,

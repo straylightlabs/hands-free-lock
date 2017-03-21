@@ -24,6 +24,7 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
     @IBOutlet weak var countDownLabel: UILabel!
 
     private var server = LockHttpServer()
+    private var reporter = Reporter()
     private let homeManager = HMHomeManager()
     private var targetLockState: HMCharacteristic?
     private var countDownTimer: Timer?
@@ -36,7 +37,6 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
         }
     }
 
-    private static let REPORT_URL = URL(string: "http://192.168.0.5:8080/report")!
     private static let COUNT_DOWN_TOTAL_SEC = 20
 
     override func viewDidLoad() {
@@ -88,7 +88,7 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
         print("INFO: The lock became \(accessory.isReachable ? "reachable" : "not reachable").")
 
         self.isReachable = accessory.isReachable
-        self.reportLockStateChange()
+        self.reporter.reportLockState(self.isReachable ? "reachable" : "unreachable")
 
         if accessory.isReachable {
             self.updateLockButtonImages()
@@ -108,6 +108,7 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
         if self.isLocked {
             self.updateLockState(false)
         } else {
+            self.reporter.reportLockState("delayLocking")
             self.countDownTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(countDownToLock), userInfo: nil, repeats: true)
             self.updateLockButtonImages()
         }
@@ -153,8 +154,9 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
 
         self.keepConnectionTimer?.invalidate()
         self.keepConnectionSwitch.isOn = false
-
         self.isUpdatingLockState = true
+
+        self.reporter.reportLockState(shouldLock ? "locking" : "unlocking")
         print("INFO: Updating the lock state: \(shouldLock ? "LOCKED" : "UNLOCKED").")
 
         if let state = self.targetLockState {
@@ -181,8 +183,7 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
         self.isUpdatingLockState = false
         self.updateLockButtonImages()
 
-        self.reportLockStateChange()
-
+        self.reporter.reportLockState(self.isLocked ? "locked" : "unlocked")
         print("INFO: Lock state updated: \(self.isLocked ? "LOCKED" : "UNLOCKED").")
     }
 
@@ -205,28 +206,6 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
         } else {
             self.lockButton.transform = CGAffineTransform.identity
         }
-    }
-
-    private func reportLockStateChange() {
-        let state = !self.isReachable ? "unreachable" : self.isLocked ? "locked" : "unlocked"
-        var request = URLRequest(url: LockViewController.REPORT_URL)
-        request.httpMethod = "POST"
-        request.httpBody = try! JSONSerialization.data(withJSONObject: ["type": "lockStateChange", "state": state])
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data, error == nil else {
-                print("ERROR: Failed to post: \(error)")
-                return
-            }
-            if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                print("ERROR: statusCode=\(httpStatus.statusCode)")
-            }
-            let responseString = String(data: data, encoding: .utf8)
-            if responseString != "OK" {
-                print("ERROR: Unexpected response: \(responseString)")
-            }
-        }
-        task.resume()
     }
 
 }
