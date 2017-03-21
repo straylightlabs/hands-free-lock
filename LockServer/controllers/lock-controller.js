@@ -31,7 +31,7 @@ var MAC_ADDRESS_WHITELIST = new Map([
     ['D5:DB:E9:EE:D8:BB', ['SLBeacon00006', 'Keigo',   [255, 255, 255]]],
     ['E7:A1:7A:F0:41:A6', ['SLBeacon00007', 'Ikue',    [255, 255, 255]]],
     ['D8:3E:FB:33:28:FC', ['SLBeacon00008', 'Taj',     [0,   135, 255]]],
-    // ['CA:DC:C0:96:C1:A4', ['SLBeacon00009', '', [255, 255, 255]]],
+    ['CA:DC:C0:96:C1:A4', ['SLBeacon00009', 'Mariya',  [255, 255, 255]]],
     // ['C2:12:FB:37:74:C6', ['SLBeacon00010', '', [255, 255, 255]]],
     ['E3:DA:76:79:72:A2', ['SLBeacon00011', 'Ryo', [255, 102, 0]]],
     ['CD:E9:12:5F:27:42', ['SLBeacon00012', 'Anuraag', [255, 255, 255]]],
