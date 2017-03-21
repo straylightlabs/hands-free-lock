@@ -45,6 +45,7 @@ var leavingMacAddressClearTimer;
 var latestJpegData;
 var indoorScannerLastHealthyTime = new Date();
 var outdoorScannerLastHealthyTime = new Date();
+var isLockDeviceReachable;
 
 var sendUnlockAction = utils.throttle(5000, function() {
   utils.get(LOCK_URL + '/unlock');
@@ -54,8 +55,12 @@ function showRainbowLEDPattern() {
   utils.get(LED_URL + '/rainbow()');
 }
 
-function showPulseLEDPattern() {
-  utils.get(LED_URL + '/pulse(50,255,120,1.0,5)');
+function showGreenPulseLEDPattern() {
+  utils.get(LED_URL + '/pulse(0,255,0,1.0,5)');
+}
+
+function showRedPulseLEDPattern() {
+  utils.get(LED_URL + '/pulse(255,0,0,1.0,10)');
 }
 
 var setBaseLEDColorTimer = null;
@@ -176,8 +181,6 @@ function logFoundBeacon(macAddress) {
 function processLockStateChange(state) {
   console.info('processLockStateChange: ' + state);
   if (state == 'locked') {
-    console.info('LOCKED');
-
     leavingMacAddressSet = new Set(presentMacAddressSet);
     console.info('Leaving IDs: ' + [...leavingMacAddressSet]);
 
@@ -189,11 +192,16 @@ function processLockStateChange(state) {
       console.info('Leftover IDs: ' + [...leftoverMacAddressSet]);
     }, SECONDS_TO_LEAVE * 1000);
   } else if (state == 'unlocked') {
-    console.info('UNLOCKED');
     clearAfterUnlock();
-    showPulseLEDPattern();
+    showGreenPulseLEDPattern();
+  } else if (state == 'reachable') {
+    isLockDeviceReachable = true;
   } else if (state == 'unreachable') {
-    console.info('UNREACHABLE');
+    isLockDeviceReachable = false;
+  } else if (state == 'delayLocking') {
+    showRedPulseLEDPattern();
+  } else if (state == 'locking' || state == 'unlocking') {
+    // do nothing
   } else {
     console.error('Unknown lock state: ' + state);
   }
@@ -255,5 +263,10 @@ exports.isIndoorScannerHealthy = function() {
 exports.isOutdoorScannerHealthy = function() {
   var timeToTest = new Date().getTime() - 120 * 1000;
   return outdoorScannerLastHealthyTime.getTime() >= timeToTest;
+}
+
+exports.isLockDeviceReachable = function() {
+  // Assume "no report" means healthy.
+  return isLockDeviceReachable === undefined || isLockDeviceReachable;
 }
 

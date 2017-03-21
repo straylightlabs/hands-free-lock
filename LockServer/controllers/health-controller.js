@@ -17,6 +17,9 @@ exports.checkHealth = function() {
   if (!lock.isOutdoorScannerHealthy()) {
     notify('Outdoor BLE scanner is down');
   }
+  if (!lock.isLockDeviceReachable()) {
+    notify('Lock device is unreachable');
+  }
   utils.get('http://192.168.0.6:8080/set(0,0,0)', function(err) {
     notify('LED controller is down');
   }, 3000);
