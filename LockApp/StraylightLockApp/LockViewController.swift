@@ -191,7 +191,7 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
 
         if isUpdatingLockState {
             UIView.animate(withDuration: 0.6) {
-                self.lockButton.transform = CGAffineTransform(scaleX: 0.001, y: 0.001)
+                self.lockButton.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
             }
         } else if self.countDownTimer != nil {
             UIView.animate(withDuration: 0.5, delay: 0.0, options: [.repeat, .curveEaseOut, .autoreverse], animations: {
