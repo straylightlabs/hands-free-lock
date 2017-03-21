@@ -19,9 +19,9 @@ exports.checkHealth = function() {
   }
   utils.get('http://192.168.0.6:8080/set(0,0,0)', function(err) {
     notify('LED controller is down');
-  }, 1000);
+  }, 3000);
   utils.get('http://192.168.0.3:8080/status', function(err) {
     notify('Lock controller is down');
-  }, 1000);
+  }, 3000);
 }
 
