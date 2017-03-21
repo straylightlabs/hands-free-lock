@@ -19,8 +19,9 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
     }
 
     @IBOutlet weak var lockButton: UIButton!
-    @IBOutlet weak var delayLockButton: UIButton!
+    @IBOutlet weak var immediateLockButton: UIButton!
     @IBOutlet weak var keepConnectionSwitch: UISwitch!
+    @IBOutlet weak var countDownLabel: UILabel!
 
     private var server = LockHttpServer()
     private let homeManager = HMHomeManager()
@@ -45,7 +46,7 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
         self.homeManager.delegate = self
 
         self.lockButton.addTarget(self, action: #selector(didTouchLockButton), for: .touchDown)
-        self.delayLockButton.addTarget(self, action: #selector(didTouchDelayLockButton), for: .touchDown)
+        self.immediateLockButton.addTarget(self, action: #selector(didTouchImmediateLockButton), for: .touchDown)
         self.keepConnectionSwitch.addTarget(self, action: #selector(didTouchKeepConnectionSwitch), for: .valueChanged)
     }
 
@@ -92,8 +93,8 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
         if accessory.isReachable {
             self.updateLockButtonImages()
         } else {
-            lockButton.setImage(#imageLiteral(resourceName: "DisconnectedButton"), for: .normal)
-            delayLockButton.isHidden = true
+            self.lockButton.setImage(#imageLiteral(resourceName: "DisconnectedButton"), for: .normal)
+            self.immediateLockButton.isHidden = true
         }
     }
 
@@ -104,14 +105,17 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
     }
 
     func didTouchLockButton(sender: UIButton) {
-        self.updateLockState(!self.isLocked)
+        if self.isLocked {
+            self.updateLockState(false)
+        } else {
+            self.countDownTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(countDownToLock), userInfo: nil, repeats: true)
+            self.updateLockButtonImages()
+        }
     }
 
-    func didTouchDelayLockButton(sender: UIButton) {
+    func didTouchImmediateLockButton(sender: UIButton) {
         precondition(!self.isLocked)
-
-        self.countDownTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(countDownToLock), userInfo: nil, repeats: true)
-        self.updateLockButtonImages()
+        self.updateLockState(true)
     }
 
     func didTouchKeepConnectionSwitch(sender: UISwitch) {
@@ -185,9 +189,10 @@ class LockViewController: UIViewController, LockHttpServerDelegate, HMHomeManage
     private func updateLockButtonImages() {
         self.lockButton.setImage(self.isLocked ? #imageLiteral(resourceName: "LockButton") : #imageLiteral(resourceName: "UnlockButton"), for: .normal)
 
-        self.delayLockButton.setTitle("Lock after \(self.countDownSec) seconds", for: .normal)
-        self.delayLockButton.isHidden = self.isLocked || self.isUpdatingLockState
-        self.delayLockButton.isEnabled = self.countDownTimer == nil
+        self.immediateLockButton.isHidden = self.isLocked || self.isUpdatingLockState
+
+        self.countDownLabel.text = String(self.countDownSec)
+        self.countDownLabel.isHidden = self.countDownTimer == nil
 
         if isUpdatingLockState {
             UIView.animate(withDuration: 0.6) {
