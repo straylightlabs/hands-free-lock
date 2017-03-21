@@ -55,7 +55,7 @@ function showRainbowLEDPattern() {
 }
 
 function showPulseLEDPattern() {
-  utils.get(LED_URL + '/pulse(50,255,120,0.5,1)');
+  utils.get(LED_URL + '/pulse(50,255,120,1.0,5)');
 }
 
 var setBaseLEDColorTimer = null;
@@ -108,7 +108,7 @@ function formatBeacon(macAddress) {
 function processNfc(url) {
   if (URL_WHITELIST.has(url)) {
     console.info('UNLOCKING with NFC: ' + url);
-    showPulseLEDPattern();
+    showRainbowLEDPattern();
     unlock();
   }
 }
@@ -191,7 +191,7 @@ function processLockStateChange(state) {
   } else if (state == 'unlocked') {
     console.info('UNLOCKED');
     clearAfterUnlock();
-    showRainbowLEDPattern();
+    showPulseLEDPattern();
   } else if (state == 'unreachable') {
     console.info('UNREACHABLE');
   } else {
