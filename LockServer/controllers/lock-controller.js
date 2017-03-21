@@ -1,3 +1,4 @@
+const base = require('airtable').base('appI5wbax01HyDamh');
 const utils = require('./utils');
 
 var LOCK_URL = 'http://192.168.0.3:8080';
@@ -5,37 +6,23 @@ var LED_URL = 'http://192.168.0.6:8080';
 var SECONDS_TO_LEAVE = 10 * 60;
 var SECONDS_TO_LOSE_SIGNAL = 5 * 60;
 
-var URL_WHITELIST = new Set([
-    'https://straylight.jp/one/00001',
-    'https://straylight.jp/one/00002',
-    'https://straylight.jp/one/33fxm',
-    'https://straylight.jp/one/6ej7n',
-    'https://straylight.jp/one/9y2tk',
-    'https://straylight.jp/one/b4cz6',
-    'https://straylight.jp/one/cwqt5',
-    'https://straylight.jp/one/f9rab',
-    'https://straylight.jp/one/hq2m8',
-    'https://straylight.jp/one/u36bx',
-    'https://straylight.jp/one/u7adh',
-    'https://straylight.jp/one/ujv3w',
-    'https://straylight.jp/one/vk2g7',
-    'https://straylight.jp/one/z3qrh',
-    'https://straylight.jp/one/zz6n7',
-]);
-var MAC_ADDRESS_WHITELIST = new Map([
-    ['E6:64:E0:C6:40:F1', ['SLBeacon00001', 'Alisaun', [182, 255, 0]]],
-    ['CA:5F:63:5B:17:D5', ['SLBeacon00002', 'Lauren',  [225, 0,   255]]],
-    ['D6:60:A7:9F:E5:DF', ['SLBeacon00003', 'Daniel',  [255, 255, 255]]],
-    ['C7:D7:61:92:28:85', ['SLBeacon00004', 'Roy',     [255, 255, 255]]],
-    ['EF:EA:6A:BD:C7:29', ['SLBeacon00005', 'Jake',    [255, 255, 255]]],
-    ['D5:DB:E9:EE:D8:BB', ['SLBeacon00006', 'Keigo',   [255, 255, 255]]],
-    ['E7:A1:7A:F0:41:A6', ['SLBeacon00007', 'Ikue',    [255, 255, 255]]],
-    ['D8:3E:FB:33:28:FC', ['SLBeacon00008', 'Taj',     [0,   135, 255]]],
-    ['CA:DC:C0:96:C1:A4', ['SLBeacon00009', 'Mariya',  [255, 255, 255]]],
-    // ['C2:12:FB:37:74:C6', ['SLBeacon00010', '', [255, 255, 255]]],
-    ['E3:DA:76:79:72:A2', ['SLBeacon00011', 'Ryo', [255, 102, 0]]],
-    ['CD:E9:12:5F:27:42', ['SLBeacon00012', 'Anuraag', [255, 255, 255]]],
-]);
+var URI_WHITELIST;
+base('People').select({
+  fields: ['First Name', 'Invitation URL', 'Beacon ID'],
+  filterByFormula: "OR(NOT({Invitation URL} = ''), NOT({Beacon ID} = ''))"
+}).firstPage(function(error, records) {
+  if (error) {
+    return console.error('Failed to load IDs from Airtable: ' + error);
+  }
+  URI_WHITELIST =
+    records.filter(r => r.get('Invitation URL')).map([
+      'https://straylight.jp/one/' + r.get('Invitation URL'),
+      {name: r.get('First Name')}
+    ]).concat(records.filter(r => r.get('Beacon ID')).map([
+      r.get('Beacon ID'),
+      {name: r.get('First Name')}
+    ]));
+});
 
 var lastSeenMap = new Map();
 var presentMacAddressSet = new Set();
@@ -63,20 +50,6 @@ function showRedPulseLEDPattern() {
   utils.get(LED_URL + '/pulse(255,0,0,1.0,10)');
 }
 
-var setBaseLEDColorTimer = null;
-function setBaseLEDColor(macAddress) {
-  clearTimeout(setBaseLEDColorTimer);
-
-  var data = MAC_ADDRESS_WHITELIST.get(macAddress);
-  if (!data || !data[2] || data[2].length != 3) {
-    utils.get(LED_URL + '/set_flicker(255,255,255)');
-    return;
-  }
-  utils.get(LED_URL + '/set_flicker(' + data[2].join(',') + ')');
-
-  setBaseLEDColorTimer = setTimeout(setBaseLEDColor, 60 * 1000);
-}
-
 var startupTime = new Date();
 function notifyCheckInAndOut(text) {
   // Suppress log message during the startup.
@@ -102,24 +75,17 @@ function unlock() {
   clearAfterUnlock();
 }
 
-function formatBeacon(macAddress) {
-  var ownerData = MAC_ADDRESS_WHITELIST.get(macAddress);
-  if (!ownerData) {
-    return macAddress;
-  }
-  return ([macAddress].concat(ownerData)).join(' ');
-}
-
 function processNfc(url) {
-  if (URL_WHITELIST.has(url)) {
+  if (URI_WHITELIST.has(url)) {
     console.info('UNLOCKING with NFC: ' + url);
+    notifyCheckInAndOut(getOwner(url) + ' is arriving.');
     showRainbowLEDPattern();
     unlock();
   }
 }
 
 function processBle(macAddress, rssi) {
-  if (!MAC_ADDRESS_WHITELIST.has(macAddress)) {
+  if (!URI_WHITELIST.has(macAddress)) {
     return;
   }
   lastSeenMap.set(macAddress, new Date().getTime());
@@ -128,7 +94,6 @@ function processBle(macAddress, rssi) {
       !presentMacAddressSet.has(macAddress)) {
     presentMacAddressSet.add(macAddress);
     logFoundBeacon(macAddress);
-    setBaseLEDColor(macAddress);
     unlock();
   }
 }
@@ -144,9 +109,9 @@ setInterval(function() {
   }
 }, 60 * 1000);
 
-function getOwner(macAddress) {
-  return MAC_ADDRESS_WHITELIST.has(macAddress)
-      ? MAC_ADDRESS_WHITELIST.get(macAddress)[1]
+function getOwner(key) {
+  return URL_WHITELIST.has(key)
+      ? URI_WHITELIST.get(key).name
       : 'Unknown Person';
 }
 
