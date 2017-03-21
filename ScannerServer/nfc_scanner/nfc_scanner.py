@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import signal
+import sys
 import time
 
 from pirc522 import RFID
@@ -30,16 +31,21 @@ def end_read(signal, frame):
 
 signal.signal(signal.SIGINT, end_read)
 
+print >> sys.stderr, 'scanning'
+
 while loop:
     (not_found, data) = rfid.request()
     if not_found:
 	continue
+
+    print >> sys.stderr, 'found'
 
     (error, uid) = rfid.anticoll()
     if error:
 	continue
 
     util.set_tag(uid)
+    print >> sys.stderr, 'found2'
 
     chars = []
     num_chars_to_skip = 28
@@ -62,9 +68,11 @@ while loop:
 	    chars.append(chr(c))
 	if done_reading:
 	    address = ''.join(chars)
+            print('NFC', address)
             if address in WHITELIST:
                 print('NFC', address)
+                sys.stdout.flush()
 	    break
 
-    time.sleep(5)
+    #time.sleep(5)
 

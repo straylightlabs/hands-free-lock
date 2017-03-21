@@ -1,50 +1,89 @@
 const utils = require('./utils');
 
-var LOCK_URL = 'http://192.168.0.3:8080/';
-var SECONDS_TO_LEAVE = 300;
+var LOCK_URL = 'http://192.168.0.3:8080';
+var LED_URL = 'http://192.168.0.6:8080';
+var SECONDS_TO_LEAVE = 10 * 60;
+var SECONDS_TO_LOSE_SIGNAL = 5 * 60;
 
 var URL_WHITELIST = new Set([
     'https://straylight.jp/one/00001',
     'https://straylight.jp/one/00002',
-    'https://straylight.jp/one/vk2g7',
-    'https://straylight.jp/one/b4cz6',
-    'https://straylight.jp/one/6ej7n',
-    'https://straylight.jp/one/u36bx',
-    'https://straylight.jp/one/9y2tk',
     'https://straylight.jp/one/33fxm',
+    'https://straylight.jp/one/6ej7n',
+    'https://straylight.jp/one/9y2tk',
+    'https://straylight.jp/one/b4cz6',
+    'https://straylight.jp/one/cwqt5',
+    'https://straylight.jp/one/f9rab',
+    'https://straylight.jp/one/hq2m8',
+    'https://straylight.jp/one/u36bx',
+    'https://straylight.jp/one/u7adh',
     'https://straylight.jp/one/ujv3w',
+    'https://straylight.jp/one/vk2g7',
+    'https://straylight.jp/one/z3qrh',
     'https://straylight.jp/one/zz6n7',
 ]);
 var MAC_ADDRESS_WHITELIST = new Map([
-    ['F0:2A:63:5C:E3:E5', ['SLBeacon99998', 'Ryo']],
-    ['EB:B4:73:21:AC:3C', ['SLBeacon99997', '']],
-    ['D7:AF:DA:DF:43:85', ['SLBeacon99999', 'Taj']],
-    ['E6:64:E0:C6:40:F1', ['SLBeacon00001', 'Alisaun']],
-    ['CA:5F:63:5B:17:D5', ['SLBeacon00002', 'Lauren']],
-    ['D6:60:A7:9F:E5:DF', ['SLBeacon00003', 'Daniel']],
-    ['C7:D7:61:92:28:85', ['SLBeacon00004', 'Roy']],
-    ['EF:EA:6A:BD:C7:29', ['SLBeacon00005', 'Jake']],
-    ['D5:DB:E9:EE:D8:BB', ['SLBeacon00006', 'Keigo']],
-    ['E7:A1:7A:F0:41:A6', ['SLBeacon00007', 'Ikue']],
-    // ['D8:3E:FB:33:28:FC', ['SLBeacon00008', '']],
-    // ['C2:12:FB:37:74:C6', ['SLBeacon00009', '']],
-    // ['C2:12:FB:37:74:C6', ['SLBeacon00010', '']],
-    // ['E3:DA:76:79:72:A2', ['SLBeacon00011', '']],
-    // ['CD:E9:12:5F:27:42', ['SLBeacon00012', '']],
+    ['E6:64:E0:C6:40:F1', ['SLBeacon00001', 'Alisaun', [182, 255, 0]]],
+    ['CA:5F:63:5B:17:D5', ['SLBeacon00002', 'Lauren',  [225, 0,   255]]],
+    ['D6:60:A7:9F:E5:DF', ['SLBeacon00003', 'Daniel',  [255, 255, 255]]],
+    ['C7:D7:61:92:28:85', ['SLBeacon00004', 'Roy',     [255, 255, 255]]],
+    ['EF:EA:6A:BD:C7:29', ['SLBeacon00005', 'Jake',    [255, 255, 255]]],
+    ['D5:DB:E9:EE:D8:BB', ['SLBeacon00006', 'Keigo',   [255, 255, 255]]],
+    ['E7:A1:7A:F0:41:A6', ['SLBeacon00007', 'Ikue',    [255, 255, 255]]],
+    ['D8:3E:FB:33:28:FC', ['SLBeacon00008', 'Taj',     [0,   135, 255]]],
+    ['CA:DC:C0:96:C1:A4', ['SLBeacon00009', 'Mariya',  [255, 255, 255]]],
+    // ['C2:12:FB:37:74:C6', ['SLBeacon00010', '', [255, 255, 255]]],
+    ['E3:DA:76:79:72:A2', ['SLBeacon00011', 'Ryo', [255, 102, 0]]],
+    ['CD:E9:12:5F:27:42', ['SLBeacon00012', 'Anuraag', [255, 255, 255]]],
 ]);
 
+var lastSeenMap = new Map();
 var presentMacAddressSet = new Set();
 var leavingMacAddressSet = new Set();
 var leftoverMacAddressSet = new Set();
 var leavingMacAddressClearTimer;
 var latestJpegData;
+var indoorScannerLastHealthyTime = new Date();
+var outdoorScannerLastHealthyTime = new Date();
 
 var sendUnlockAction = utils.throttle(5000, function() {
-  utils.get(LOCK_URL + 'unlock');
+  utils.get(LOCK_URL + '/unlock');
 });
 
-function pulseLEDs() {
-  utils.get('http://192.168.0.6:8080/pulse(200,200,200,1,3)');
+function showRainbowLEDPattern() {
+  utils.get(LED_URL + '/rainbow()');
+}
+
+function showPulseLEDPattern() {
+  utils.get(LED_URL + '/pulse(50,255,120,0.5,1)');
+}
+
+var setBaseLEDColorTimer = null;
+function setBaseLEDColor(macAddress) {
+  clearTimeout(setBaseLEDColorTimer);
+
+  var data = MAC_ADDRESS_WHITELIST.get(macAddress);
+  if (!data || !data[2] || data[2].length != 3) {
+    utils.get(LED_URL + '/set_flicker(255,255,255)');
+    return;
+  }
+  utils.get(LED_URL + '/set_flicker(' + data[2].join(',') + ')');
+
+  setBaseLEDColorTimer = setTimeout(setBaseLEDColor, 60 * 1000);
+}
+
+var startupTime = new Date();
+function notifyCheckInAndOut(text) {
+  // Suppress log message during the startup.
+  if (new Date().getTime() - startupTime.getTime() < 60 * 1000) {
+    return;
+  }
+  console.info(text);
+  utils.notifySlack({
+    channel: '#logs',
+    text: text,
+    username: 'Check in & out'
+  });
 }
 
 function clearAfterUnlock() {
@@ -56,40 +95,82 @@ function clearAfterUnlock() {
 function unlock() {
   sendUnlockAction();
   clearAfterUnlock();
-  pulseLEDs();
+}
+
+function formatBeacon(macAddress) {
+  var ownerData = MAC_ADDRESS_WHITELIST.get(macAddress);
+  if (!ownerData) {
+    return macAddress;
+  }
+  return ([macAddress].concat(ownerData)).join(' ');
 }
 
 function processNfc(url) {
-  console.info('processNfc: ' + url);
   if (URL_WHITELIST.has(url)) {
     console.info('UNLOCKING with NFC: ' + url);
+    showPulseLEDPattern();
     unlock();
   }
 }
 
 function processBle(macAddress, rssi) {
-  console.info('processBle: ' + macAddress + ' RSSI=' + rssi);
-  if (rssi >= 0) {
-    presentMacAddressSet.delete(macAddress);
-    logPresentMembers();
-  } else if (MAC_ADDRESS_WHITELIST.has(macAddress) &&
-             !leavingMacAddressSet.has(macAddress) &&
-             !leftoverMacAddressSet.has(macAddress) &&
-             !presentMacAddressSet.has(macAddress)) {
-    console.info('UNLOCKING with BLE: ' + macAddress);
+  if (!MAC_ADDRESS_WHITELIST.has(macAddress)) {
+    return;
+  }
+  lastSeenMap.set(macAddress, new Date().getTime());
+  if (!leavingMacAddressSet.has(macAddress) &&
+      !leftoverMacAddressSet.has(macAddress) &&
+      !presentMacAddressSet.has(macAddress)) {
     presentMacAddressSet.add(macAddress);
-    logPresentMembers();
+    logFoundBeacon(macAddress);
+    setBaseLEDColor(macAddress);
     unlock();
   }
 }
 
-function logPresentMembers() {
-  var presentNames = [];
+setInterval(function() {
+  var now = new Date().getTime();
+  for (var [macAddress, lastSeen] of lastSeenMap) {
+    if (lastSeen !== undefined && now - lastSeen >= SECONDS_TO_LOSE_SIGNAL * 1000) {
+      presentMacAddressSet.delete(macAddress);
+      lastSeenMap.delete(macAddress);
+      logLostBeacon(macAddress);
+    }
+  }
+}, 60 * 1000);
+
+function getOwner(macAddress) {
+  return MAC_ADDRESS_WHITELIST.has(macAddress)
+      ? MAC_ADDRESS_WHITELIST.get(macAddress)[1]
+      : 'Unknown Person';
+}
+
+function getPresentBeaconOwners() {
+  function joinPhrases(arr) {
+    if (arr.length == 0) {
+      return '';
+    }
+    if (arr.length == 1) {
+      return arr[0];
+    }
+    return arr.slice(0, -1).join(', ') + ' and ' + arr[arr.length - 1];
+  }
+
+  var presentOwners = [];
   presentMacAddressSet.forEach(function(macAddress) {
-    var name = MAC_ADDRESS_WHITELIST.get(macAddress)[1];
-    presentNames.push(name);
+    presentOwners.push(getOwner(macAddress));
   });
-  console.info('Present members: ' + presentNames);
+  return joinPhrases(presentOwners);
+}
+
+function logLostBeacon(macAddress) {
+  var msg = getOwner(macAddress) + ' left.\nPresent members: ' + getPresentBeaconOwners();
+  notifyCheckInAndOut(msg);
+}
+
+function logFoundBeacon(macAddress) {
+  var msg = getOwner(macAddress) + ' is arriving.\nPresent members: ' + getPresentBeaconOwners();
+  notifyCheckInAndOut(msg);
 }
 
 function processLockStateChange(state) {
@@ -110,6 +191,7 @@ function processLockStateChange(state) {
   } else if (state == 'unlocked') {
     console.info('UNLOCKED');
     clearAfterUnlock();
+    showRainbowLEDPattern();
   } else if (state == 'unreachable') {
     console.info('UNREACHABLE');
   } else {
@@ -121,10 +203,22 @@ function processImage(data) {
   latestJpegData = Buffer.from(data, 'base64');
 }
 
+function updateBleScannerHealth(data) {
+  if (data.deviceName.indexOf('SLBeaconTest') != 0) {
+    return;
+  }
+  if (data.source == 'INDOOR_SCANNER') {
+    indoorScannerLastHealthyTime = new Date();
+  } else {
+    outdoorScannerLastHealthyTime = new Date();
+  }
+}
+
 function process(data) {
   if (data.type == 'nfc') {
     processNfc(data.url);
   } else if (data.type == 'ble') {
+    updateBleScannerHealth(data);
     processBle(data.macAddress, data.rssi);
   } else if (data.type == 'lockStateChange') {
     processLockStateChange(data.state);
@@ -151,5 +245,15 @@ exports.getLatestImage = function(req, res) {
   }
   res.writeHead(200, {'Content-Type': 'image/jpeg'});
   res.end(latestJpegData);
+}
+
+exports.isIndoorScannerHealthy = function() {
+  var timeToTest = new Date().getTime() - 120 * 1000;
+  return indoorScannerLastHealthyTime.getTime() >= timeToTest;
+}
+
+exports.isOutdoorScannerHealthy = function() {
+  var timeToTest = new Date().getTime() - 120 * 1000;
+  return outdoorScannerLastHealthyTime.getTime() >= timeToTest;
 }
 

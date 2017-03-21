@@ -31,7 +31,7 @@ draw.rectangle((0,0,width,height), outline=0, fill=0)
 
 # Draw a line of text.
 text = ' '.join(sys.argv[1:])
-font = ImageFont.truetype('Arial.ttf', 48)
+font = ImageFont.truetype('Arial.ttf', 28)
 draw.text((0, 0), text, font=font, fill=255)
 disp.image(image)
 disp.display()
