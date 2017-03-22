@@ -52,7 +52,7 @@ function showRedPulseLEDPattern() {
 }
 
 var startupTime = new Date();
-function notifyCheckInAndOut(text) {
+function notifySlack(text) {
   // Suppress log message during the startup.
   if (new Date().getTime() - startupTime.getTime() < 60 * 1000) {
     return;
@@ -61,7 +61,7 @@ function notifyCheckInAndOut(text) {
   utils.notifySlack({
     channel: '#logs',
     text: text,
-    username: 'Check in & out'
+    username: 'Front door'
   });
 }
 
@@ -79,7 +79,7 @@ function unlock() {
 function processNfc(url) {
   if (URI_WHITELIST.has(url)) {
     console.info('UNLOCKING with NFC: ' + url);
-    notifyCheckInAndOut(getOwner(url) + ' is arriving.');
+    notifySlack(getOwner(url) + ' is arriving.');
     showRainbowLEDPattern();
     unlock();
   }
@@ -111,12 +111,10 @@ setInterval(function() {
 }, 60 * 1000);
 
 function getOwner(key) {
-  return URI_WHITELIST.has(key)
-      ? URI_WHITELIST.get(key).name
-      : 'Unknown Person';
+  return URI_WHITELIST.has(key) ? URI_WHITELIST.get(key).name : 'Unknown Person';
 }
 
-function getPresentBeaconOwners() {
+function getOwners(macAddresses) {
   function joinPhrases(arr) {
     if (arr.length == 0) {
       return '';
@@ -127,26 +125,24 @@ function getPresentBeaconOwners() {
     return arr.slice(0, -1).join(', ') + ' and ' + arr[arr.length - 1];
   }
 
-  var presentOwners = [];
-  presentMacAddressSet.forEach(function(macAddress) {
-    presentOwners.push(getOwner(macAddress));
-  });
-  return joinPhrases(presentOwners);
+  return joinPhrases(macAddresses.map(a => getOwner(a)));
 }
 
 function logLostBeacon(macAddress) {
-  var msg = getOwner(macAddress) + ' left.\nPresent members: ' + getPresentBeaconOwners();
-  notifyCheckInAndOut(msg);
+  var msg = getOwner(macAddress) + ' left.\nPresent members: ' + getOwners(presentMacAddressSet);
+  notifySlack(msg);
 }
 
 function logFoundBeacon(macAddress) {
-  var msg = getOwner(macAddress) + ' is arriving.\nPresent members: ' + getPresentBeaconOwners();
-  notifyCheckInAndOut(msg);
+  var msg = getOwner(macAddress) + ' is arriving.\nPresent members: ' + getOwners(presentMacAddressSet);
+  notifySlack(msg);
 }
 
 function processLockStateChange(state) {
   console.info('processLockStateChange: ' + state);
   if (state == 'locked') {
+    notifySlack('The door is locked.');
+
     leavingMacAddressSet = new Set(presentMacAddressSet);
     console.info('Leaving IDs: ' + [...leavingMacAddressSet]);
 
@@ -158,6 +154,7 @@ function processLockStateChange(state) {
       console.info('Leftover IDs: ' + [...leftoverMacAddressSet]);
     }, SECONDS_TO_LEAVE * 1000);
   } else if (state == 'unlocked') {
+    notifySlack('The door is unlocked.');
     clearAfterUnlock();
     showGreenPulseLEDPattern();
   } else if (state == 'reachable') {
