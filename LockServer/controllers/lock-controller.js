@@ -125,6 +125,9 @@ function getOwners(macAddresses) {
     return arr.slice(0, -1).join(', ') + ' and ' + arr[arr.length - 1];
   }
 
+  if (!Array.isArray(macAddresses)) {
+    macAddresses = [...macAddresses];
+  }
   return joinPhrases(macAddresses.map(a => getOwner(a)));
 }
 
