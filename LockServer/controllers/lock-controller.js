@@ -48,11 +48,15 @@ function showRainbowLEDPattern() {
 }
 
 function showGreenPulseLEDPattern() {
-  utils.get(LED_URL + '/pulse(0,255,0,1.0,5)');
+  utils.get(LED_URL + '/pulse(0,255,0,0.3,5)');
 }
 
 function showRedPulseLEDPattern() {
-  utils.get(LED_URL + '/pulse(255,0,0,1.0,10)');
+  utils.get(LED_URL + '/pulse(100,0,0,0.3,10)');
+}
+
+function showFastRedPulseLEDPattern() {
+  utils.get(LED_URL + '/pulse(255,0,0,0.1,2)');
 }
 
 var startupTime = new Date();
@@ -149,6 +153,8 @@ function processLockStateChange(state) {
   console.info('processLockStateChange: ' + state);
   if (state == 'locked') {
     notifySlack('The door is locked.');
+
+    showFastRedPulseLEDPattern();
 
     leavingMacAddressSet = new Set(presentMacAddressSet);
     console.info('Leaving IDs: ' + [...leavingMacAddressSet]);
