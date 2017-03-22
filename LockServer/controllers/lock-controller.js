@@ -48,15 +48,15 @@ function showRainbowLEDPattern() {
 }
 
 function showGreenPulseLEDPattern() {
-  utils.get(LED_URL + '/pulse(0,255,0,0.3,5)');
+  utils.get(LED_URL + '/pulse(0,150,0,0.1,2)');
 }
 
 function showRedPulseLEDPattern() {
-  utils.get(LED_URL + '/pulse(100,0,0,0.3,10)');
+  utils.get(LED_URL + '/pulse(100,0,0,0.3,15)');
 }
 
 function showFastRedPulseLEDPattern() {
-  utils.get(LED_URL + '/pulse(255,0,0,0.1,2)');
+  utils.get(LED_URL + '/pulse(150,0,0,0.1,2)');
 }
 
 var startupTime = new Date();
@@ -80,6 +80,7 @@ function clearAfterUnlock() {
 }
 
 function unlock() {
+  setTimeout(showRainbowLEDPattern, 2000);
   sendUnlockAction();
   clearAfterUnlock();
 }
@@ -88,7 +89,7 @@ function processNfc(url) {
   if (URI_WHITELIST.has(url)) {
     console.info('UNLOCKING with NFC: ' + url);
     notifySlack(getOwner(url) + ' is arriving.');
-    showRainbowLEDPattern();
+    showGreenPulseLEDPattern();
     unlock();
   }
 }
@@ -169,7 +170,6 @@ function processLockStateChange(state) {
   } else if (state == 'unlocked') {
     notifySlack('The door is unlocked.');
     clearAfterUnlock();
-    showGreenPulseLEDPattern();
   } else if (state == 'reachable') {
     isLockDeviceReachable = true;
   } else if (state == 'unreachable') {
