@@ -6,24 +6,28 @@ var LED_URL = 'http://192.168.0.6:8080';
 var SECONDS_TO_LEAVE = 10 * 60;
 var SECONDS_TO_LOSE_SIGNAL = 5 * 60;
 
-var URI_WHITELIST;
-base('People').select({
-  fields: ['First Name', 'Invitation URL', 'Beacon ID'],
-  filterByFormula: "OR(NOT({Invitation URL} = ''), NOT({Beacon ID} = ''))"
-}).firstPage(function(error, records) {
-  if (error) {
-    return console.error('Failed to load IDs from Airtable: ' + error);
-  }
-  URI_WHITELIST =
-    new Map(records.filter(r => r.get('Invitation URL')).map(r => [
-      'https://straylight.jp/one/' + r.get('Invitation URL'),
-      {name: r.get('First Name')}
-    ]).concat(records.filter(r => r.get('Beacon ID')).map(r => [
-      r.get('Beacon ID'),
-      {name: r.get('First Name')}
-    ])));
-  console.info('URI_WHITELIST:', URI_WHITELIST);
-});
+var URI_WHITELIST = new Map();
+function reloadIDFromAirtable() {
+  base('People').select({
+    fields: ['First Name', 'Invitation URL', 'Beacon ID'],
+    filterByFormula: "OR(NOT({Invitation URL} = ''), NOT({Beacon ID} = ''))"
+  }).firstPage(function(error, records) {
+    if (error) {
+      return console.error('Failed to load IDs from Airtable: ' + error);
+    }
+    URI_WHITELIST =
+      new Map(records.filter(r => r.get('Invitation URL')).map(r => [
+        'https://straylight.jp/one/' + r.get('Invitation URL'),
+        {name: r.get('First Name')}
+      ]).concat(records.filter(r => r.get('Beacon ID')).map(r => [
+        r.get('Beacon ID'),
+        {name: r.get('First Name')}
+      ])));
+    console.info('URI_WHITELIST:', URI_WHITELIST);
+  });
+}
+reloadIDFromAirtable();
+setInterval(reloadIDFromAirtable, 10 * 60 * 1000);
 
 var lastSeenMap = new Map();
 var presentMacAddressSet = new Set();
