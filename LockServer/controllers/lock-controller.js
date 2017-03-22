@@ -15,13 +15,14 @@ base('People').select({
     return console.error('Failed to load IDs from Airtable: ' + error);
   }
   URI_WHITELIST =
-    records.filter(r => r.get('Invitation URL')).map([
+    new Map(records.filter(r => r.get('Invitation URL')).map(r => [
       'https://straylight.jp/one/' + r.get('Invitation URL'),
       {name: r.get('First Name')}
-    ]).concat(records.filter(r => r.get('Beacon ID')).map([
+    ]).concat(records.filter(r => r.get('Beacon ID')).map(r => [
       r.get('Beacon ID'),
       {name: r.get('First Name')}
-    ]));
+    ])));
+  console.info('URI_WHITELIST:', URI_WHITELIST);
 });
 
 var lastSeenMap = new Map();
@@ -110,7 +111,7 @@ setInterval(function() {
 }, 60 * 1000);
 
 function getOwner(key) {
-  return URL_WHITELIST.has(key)
+  return URI_WHITELIST.has(key)
       ? URI_WHITELIST.get(key).name
       : 'Unknown Person';
 }
