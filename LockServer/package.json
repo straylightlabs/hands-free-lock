@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "prod": "pm2 start index.js --name=lock-server --update-env --merge-logs --log-date-format='YYYY-MM-DD HH:mm:ss Z'",
     "dev": "nodemon index.js"
   },
   "author": "",
