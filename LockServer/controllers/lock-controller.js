@@ -48,15 +48,15 @@ function showRainbowLEDPattern() {
 }
 
 function showGreenPulseLEDPattern() {
-  utils.get(LED_URL + '/pulse(0,150,0,0.1,2)');
+  utils.get(LED_URL + '/pulse(20,150,20,0.4,0.1,2)');
 }
 
 function showRedPulseLEDPattern() {
-  utils.get(LED_URL + '/pulse(100,0,0,0.3,15)');
+  utils.get(LED_URL + '/rotate\(250,50,50,40,4.0\)');
 }
 
 function showFastRedPulseLEDPattern() {
-  utils.get(LED_URL + '/pulse(150,0,0,0.1,2)');
+  utils.get(LED_URL + '/pulse(150,20,20,0.4,0.1,2)');
 }
 
 var startupTime = new Date();
