@@ -232,12 +232,12 @@ exports.getLatestImage = function(req, res) {
 }
 
 exports.isIndoorScannerHealthy = function() {
-  var timeToTest = new Date().getTime() - 120 * 1000;
+  var timeToTest = new Date().getTime() - 3600 * 1000;
   return indoorScannerLastHealthyTime.getTime() >= timeToTest;
 }
 
 exports.isOutdoorScannerHealthy = function() {
-  var timeToTest = new Date().getTime() - 120 * 1000;
+  var timeToTest = new Date().getTime() - 3600 * 1000;
   return outdoorScannerLastHealthyTime.getTime() >= timeToTest;
 }
 
