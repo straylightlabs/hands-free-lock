@@ -38,6 +38,7 @@ var latestJpegData;
 var indoorScannerLastHealthyTime = new Date();
 var outdoorScannerLastHealthyTime = new Date();
 var isLockDeviceReachable;
+var allDeviceSet = new Set();
 
 var sendUnlockAction = utils.throttle(5000, function() {
   utils.get(LOCK_URL + '/unlock');
@@ -204,6 +205,7 @@ function process(data) {
   } else if (data.type == 'ble') {
     updateBleScannerHealth(data);
     processBle(data.macAddress, data.rssi);
+    allDeviceSet.add([data.deviceName, data.macAddress].join(' '));
   } else if (data.type == 'lockStateChange') {
     processLockStateChange(data.state);
   } else if (data.type == 'image') {
@@ -244,5 +246,9 @@ exports.isOutdoorScannerHealthy = function() {
 exports.isLockDeviceReachable = function() {
   // Assume "no report" means healthy.
   return isLockDeviceReachable === undefined || isLockDeviceReachable;
+}
+
+exports.getAllDevices = function(req, res) {
+  res.send('<html><pre>' + [...allDeviceSet].join('\n') + '</pre></html>');
 }
 
