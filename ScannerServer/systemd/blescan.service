@@ -1,0 +1,19 @@
+[Unit]
+Description=blescan
+After=bluetooth.target
+After=network-online.target
+After=hciuart.service
+After=sys-subsystem-bluetooth-devices-hci0.device
+Requires=bluetooth.target
+Requires=network-online.target
+Requires=hciuart.service
+Requires=sys-subsystem-bluetooth-devices-hci0.device
+
+[Service]
+ExecStartPre=/usr/local/bin/hciconfig hci0 reset
+ExecStart=/home/pi/hands-free-lock/ScannerServer/ble_scanner.py
+TimeoutStartSec=10
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
