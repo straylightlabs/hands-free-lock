@@ -39,8 +39,8 @@
                                     <constraint firstAttribute="height" constant="100" id="L4D-cM-hox"/>
                                     <constraint firstAttribute="width" constant="100" id="zNH-wb-nU0"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="74"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="42"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -58,7 +58,7 @@
                     </view>
                     <connections>
                         <outlet property="countDownLabel" destination="KsG-g6-F2Y" id="bHA-Uc-qMj"/>
-                        <outlet property="delayLockButton" destination="rAi-vd-guC" id="Krt-Y9-6TN"/>
+                        <outlet property="immediateLockButton" destination="rAi-vd-guC" id="wOg-FG-ocB"/>
                         <outlet property="keepConnectionSwitch" destination="mdO-dT-MuH" id="ybQ-DD-Jrs"/>
                         <outlet property="lockButton" destination="ocn-m5-twk" id="ZWd-TS-3oN"/>
                     </connections>

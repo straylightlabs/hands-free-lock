@@ -9,6 +9,7 @@ from subprocess import PIPE, Popen
 from threading  import Thread
 from Queue import Queue, Empty
 
+SCANNER_NAME = 'SCANNER0';
 ON_POSIX = 'posix' in sys.builtin_module_names
 
 def enqueue_output(out, queue):
@@ -22,22 +23,14 @@ t = Thread(target=enqueue_output, args=(p.stdout, q))
 t.daemon = True  # thread dies with the program
 t.start()
 
-def log(msg):
-    msgStr = '%s %s' % (datetime.datetime.now().isoformat(), str(msg))
-    print msgStr
-    with open('/var/log/blescan.log', 'a') as f:
-        f.write(msgStr)
-        f.write('\n')
-
 def post_scan(mac_address, device_name):
     data = {
         'type': 'ble',
         'rssi': -100,
         'macAddress': mac_address,
         'deviceName': device_name,
-        'source': 'INDOOR_SCANNER'
+        'source': SCANNER_NAME,
     }
-    log(data)
     requests.post('http://192.168.0.5:8080/report', data=data)
 
 while p.poll() is None:
@@ -52,6 +45,4 @@ while p.poll() is None:
         device_name = parts[1]
         if device_name.startswith('SLBeacon'):
             post_scan(mac_address, device_name)
-
-log('Existing.')
 
