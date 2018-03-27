@@ -1,6 +1,0 @@
-framework module Pods_StraylightLockApp {
-  umbrella header "Pods-StraylightLockApp-umbrella.h"
-
-  export *
-  module * { export * }
-}
