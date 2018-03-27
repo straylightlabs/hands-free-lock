@@ -3,26 +3,22 @@ const cors = require('cors');
 const express = require('express');
 const http = require('http');
 
-const router = require('./router');
-const socket = require('./socket');
-const health = require('./controllers/health-controller');
+const controller = require('./controller');
 
-const port = 8080;
+const PORT = 8080;
 
 const server = http.createServer();
-socket(server);
-
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
-router(app);
+app.post('/report', controller.post);
 
 server.on('request', app);
-server.listen(port, function () {
+server.listen(PORT, function () {
   console.log('Listening on ' + server.address().port);
 });
 
-console.log('Checking health every 10 mins');
-setInterval(health.checkHealth, 10 * 60 * 1000);
+// console.log('Checking health every 10 mins');
+// setInterval(controller.checkHealth, 10 * 60 * 1000);
 
