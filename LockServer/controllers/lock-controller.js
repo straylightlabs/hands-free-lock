@@ -200,6 +200,7 @@ function updateBleScannerHealth(data) {
 }
 
 function process(data) {
+  console.info('Incoming data: ' + JSON.stringify(data));
   if (data.type == 'nfc') {
     processNfc(data.url);
   } else if (data.type == 'ble') {
