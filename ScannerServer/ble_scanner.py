@@ -31,7 +31,7 @@ def post_scan(mac_address, device_name):
         'deviceName': device_name,
         'source': SCANNER_NAME,
     }
-    requests.post('http://192.168.0.5:8080/report', data=data)
+    requests.post('https://straylight.jp/connect/hooks/lock', data=data)
 
 while p.poll() is None:
     try:
