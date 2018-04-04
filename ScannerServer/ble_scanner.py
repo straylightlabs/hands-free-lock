@@ -31,7 +31,7 @@ def post_scan(mac_address, device_name):
         'deviceName': device_name,
         'source': SCANNER_NAME,
     }
-    requests.post('https://straylight.jp/connect/hooks/lock', data=data)
+    requests.post('https://straylight.jp/connect/hooks/blescan', data=data)
 
 while p.poll() is None:
     try:
